@@ -1,5 +1,5 @@
 const numeral = require('numeral');
-let deductions = 500;
+let WTdeductions = 500;
 
 
 // This function is "array.map" but works with object
@@ -25,11 +25,13 @@ let calc = {
 		
 		let objekti =  {
 			rentalincome: 2000,
-			interestPayments: 1000
+			interestPayments: 12940.43887
 		}
 
+		let old_WTdeductions = objekti.rentalincome * 0.1
+
 		let profits = objekti.rentalincome * 12,
-			profitBeforeTax = profits - deductions,
+			profitBeforeTax = profits - WTdeductions,
 			interestRelief = {
 				"2016": 1,
 				"2017": 0.75,
@@ -41,12 +43,29 @@ let calc = {
 		     return key + " morjestaa";
 		  	});
 		  	
- 	let yksi = objekti.interestPayments;
-	let interestTaxable	= interestRelief.map(function(value, key, object) 
-	{
-		return value * objekti.interestPayments
-	});	
-	console.log(interestTaxable)
+			let interestTaxable	= interestRelief.map(function(value, key, object) 
+			{
+				return objekti.interestPayments - value * objekti.interestPayments
+			});				
+
+			let interestReliefPounds = interestRelief.map(function(value, key, object)
+			{
+				return objekti.interestPayments * value + i
+			});
+
+			let i=0;
+
+			let taxableAmountNewWT = interestRelief.map(function(value, key, object)
+			{
+				i += 1
+				return objekti.rentalincome - interestReliefPounds[1] - WTdeductions 
+			});
+
+
+			
+				
+
+	console.log(taxableAmountNewWT)
 	}
 };
 
