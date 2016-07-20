@@ -1,5 +1,5 @@
 # btl-calculator
 
-In progress.
+Currently under development.
 
 npm install & npm start
