@@ -1,5 +1,5 @@
 const numeral = require('numeral');
-let WTdeductions = 500;
+import { calculateTaxes } from './tax_calculations';
 
 
 // This function is "array.map" but works with object
@@ -24,11 +24,17 @@ let calc = {
 	tax: function(object2) {
 		
 		let objekti =  {
-			rentalincome: 2000,
-			interestPayments: 12940.43887
+			rentalincome: 25800,
+			interestPayments: 12940.43887,
+			employmentIncome: 100000,
 		}
+		let employmentTaxes = calculateTaxes(objekti.employmentIncome)
 
 		let old_WTdeductions = objekti.rentalincome * 0.1
+		let WTdeductions = 500;
+		let otherTaxDeductions = 500;
+		let WTDifference = WTdeductions - old_WTdeductions; 
+
 
 		let profits = objekti.rentalincome * 12,
 			profitBeforeTax = profits - WTdeductions,
@@ -48,24 +54,44 @@ let calc = {
 				return objekti.interestPayments - value * objekti.interestPayments
 			});				
 
+			
+			
 			let interestReliefPounds = interestRelief.map(function(value, key, object)
 			{
-				return objekti.interestPayments * value + i
+				return objekti.interestPayments * value 
 			});
 
-			let i=0;
+			let i=-1;
 
 			let taxableAmountNewWT = interestRelief.map(function(value, key, object)
 			{
 				i += 1
-				return objekti.rentalincome - interestReliefPounds[1] - WTdeductions 
+				return objekti.rentalincome - interestReliefPounds[Object.keys(interestReliefPounds)[i]] - WTdeductions - otherTaxDeductions;
+			    
 			});
+
+
+			i=-1;
+			let taxableAmountOldWT = taxableAmountNewWT.map(function(value, key, object)
+			{
+				i += 1
+				return value + WTDifference;	    
+			});
+
+			i=-1;
+
+			let newWTTax = taxableAmountNewWT.map(function(value, key, object)
+			{
+				i += 1
+				return calculateTaxes(objekti.employmentIncome + value) - employmentTaxes;	    
+			});
+
+
 
 
 			
 				
-
-	console.log(taxableAmountNewWT)
+	console.log(newWTTax)
 	}
 };
 

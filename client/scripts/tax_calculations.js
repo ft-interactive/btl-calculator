@@ -94,7 +94,7 @@ function calcIncomeTax(pA) {
         difference_old = this[i][1];
     }
 
-    //console.log("tässä" + totalTax);
+    return totalTax
 
 }
 

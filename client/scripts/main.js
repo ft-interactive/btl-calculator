@@ -1,6 +1,7 @@
 import oHoverable from 'o-hoverable';
 import attachFastClick from 'fastclick';
 import { select, selectAll } from 'd3-selection';
+import { transition } from 'd3-transition';
 import d3 from 'd3';
 import { calculateTaxes } from './tax_calculations';
 import { calc } from './other_calculations';
@@ -80,6 +81,30 @@ document.addEventListener('DOMContentLoaded', () => {
               let output = numeral(calc.profitBeforeTax(input)).format('0,0');
               selectAll('#tableTax').text(output);
           };
+        },
+        eventListeners: function ()  {   
+             selectAll('.o-forms-text').on('input', function() {
+            console.log("event logattu")
+            select(this).property('value', numeral(this.value).format('0,0'));
+            let output = numeral().unformat(this.value);
+            let source = this.id;
+            Widget.inputValues(source, output);
+            select("#chartText2").style("visibility", "visible");
+        });
+
+        let saveevent = selectAll('#slider'),
+            thisbind = this.inputValues.bind(callback),
+            callback = function(d, i) {
+                // console.log(this.parentElement);
+                let lab = this.parentElement.children[4].id,
+                    pos = Number(this.value),
+                    newX = slider.calcLabelPos(pos, 'slider', 'else', i);
+                slider.moveLabel(lab, pos, newX);
+                console.log("tässä" + calculateTaxes(40000));
+                thisbind(lab, pos);
+            select("#chartText2").style("visibility", "visible");
+            };
+        saveevent.on('input', callback); 
         }
     };
 
@@ -126,7 +151,7 @@ calc.tax();
                     sliderArray[i].sliderID, 'firstTime') // the ID of the slider -- TODO: GET RID OF THIS
             );
         }
-        slider.eventListener();
+        
     };
 
     slider.moveLabel = function(divId, labelText, pos) {
@@ -141,22 +166,6 @@ calc.tax();
                 .style('left', pos + 'px');
     };
 
-    slider.eventListener = function() {
-        let saveevent = selectAll('#slider'),
-            thisbind = this.inputValues.bind(callback),
-            callback = function(d, i) {
-                // console.log(this.parentElement);
-                let lab = this.parentElement.children[4].id,
-                    pos = Number(this.value),
-                    newX = slider.calcLabelPos(pos, 'slider', 'else', i);
-                slider.moveLabel(lab, pos, newX);
-                calculateTaxes(40000);
-                thisbind(lab, pos);
-            };
-
-        saveevent.on('input', callback);
-
-    };
 
     slider.calcLabelPos = function(pos, SliderID, state, number) {
 
@@ -190,21 +199,12 @@ calc.tax();
         return array;
     };
 
-    textInput.eventListener = function() {
-        selectAll('.o-forms-text').on('input', function() {
-            select(this).property('value', numeral(this.value).format('0,0'));
-            let output = numeral().unformat(this.value);
-            let source = this.id;
-            Widget.inputValues(source, output);
-        });
-    };
-
     textInput.textInputTemplate = function(object) {
 
         return `
           <div class="o-forms-group">
             <small class="o-forms-additional-info">${object.info}</small>
-            <input type="text" value=${object.initialValue} id=${object.id} placeholder="placeholder" class="o-forms-text"></input>
+            <input maxlength="7" type="text" value=${object.initialValue} id=${object.id} placeholder="placeholder" class="o-forms-text"></input>
           </div>
       `;
     };
@@ -217,7 +217,7 @@ calc.tax();
         function callback(element, index, array) {
             let i = index;
             // build slider
-            let inputHolder = select('#inputControls');
+            let inputHolder = select('#tableHolder');
             inputHolder
                 .append('div')
                 .attr('id', 'textInput')
@@ -226,51 +226,7 @@ calc.tax();
             // Let's send the stuff to moveLabel() which creates the label
             // and positions it
         }
-        textInput.eventListener();
-    };
-
-    table.tableTemplate = function(object) {
-        return `
-          <table class="o-table o-table--responsive-overflow o-table--row-stripes" data-o-component="o-table">
-            <thead>
-            <th></th>
-            <th data-o-table-data-type="numeric" class="o-table__cell--numeric">2016 <span class="o-table__cell--content-secondary">(GBP)</span></th>
-              <th data-o-table-data-type="numeric" class="o-table__cell--numeric">2016 <span class="o-table__cell--content-secondary">(GBP)</span></th>
-              <th data-o-table-data-type="numeric" class="o-table__cell--numeric">2017 <span class="o-table__cell--content-secondary">(GBP)</span></th>
-                <th data-o-table-data-type="numeric" class="o-table__cell--numeric">2018 <span class="o-table__cell--content-secondary">(GBP)</span></th>
-                <th data-o-table-data-type="numeric" class="o-table__cell--numeric">2019 <span class="o-table__cell--content-secondary">(GBP)</span></th>
-                <th data-o-table-data-type="numeric" class="o-table__cell--numeric">2020 <span class="o-table__cell--content-secondary">(GBP)</span></th>
-            <tbody>
-                <tr>
-                    <td><b>Profit before tax</b></td>
-                    <td data-o-table-data-type="numeric" id="tableRentalIncome" class="o-table__cell--numeric">${tableArray[0]['rentalincome']}</td>
-                    <td data-o-table-data-type="numeric" id="tableRentalIncome" class="o-table__cell--numeric">${tableArray[0]['rentalincome']}</td>
-                    <td data-o-table-data-type="numeric" id="tableRentalIncome" class="o-table__cell--numeric">${tableArray[0]['rentalincome']}</td>
-                    <td data-o-table-data-type="numeric" id="tableRentalIncome" class="o-table__cell--numeric">${tableArray[0]['rentalincome']}</td>
-                    <td data-o-table-data-type="numeric" id="tableRentalIncome" class="o-table__cell--numeric">${tableArray[0]['rentalincome']}</td>
-                    <td data-o-table-data-type="numeric" id="tableRentalIncome" class="o-table__cell--numeric">${tableArray[0]['rentalincome']}</td>                   
-                </tr>
-                <tr>
-                    <td><b>Tax</b></td>
-                    <td data-o-table-data-type="numeric" id="tableTax" class="o-table__cell--numeric">2</td>
-                    <td data-o-table-data-type="numeric" id="tableTax" class="o-table__cell--numeric">2</td>
-                    <td data-o-table-data-type="numeric" id="tableTax" class="o-table__cell--numeric">2</td>
-                    <td data-o-table-data-type="numeric" id="tableTax" class="o-table__cell--numeric">2</td>
-                    <td data-o-table-data-type="numeric" id="tableTax" class="o-table__cell--numeric">2</td>
-                    <td data-o-table-data-type="numeric" id="tableTax" class="o-table__cell--numeric">2</td>
-                </tr>
-                <tr>
-                    <td><b>Profit after tax</b></td>
-                    <td data-o-table-data-type="numeric" class="o-table__cell--numeric">2</td>
-                    <td data-o-table-data-type="numeric" class="o-table__cell--numeric">2</td>
-                    <td data-o-table-data-type="numeric" class="o-table__cell--numeric">2</td>
-                    <td data-o-table-data-type="numeric" class="o-table__cell--numeric">1.56</td>                    
-                    <td data-o-table-data-type="numeric" class="o-table__cell--numeric">1.56</td>                    
-                    <td data-o-table-data-type="numeric" class="o-table__cell--numeric">1.56</td> 
-                </tr>
-            </tbody>
-          </table>
-      `;
+        Widget.eventListeners();
     };
 
     table.create = function() {
@@ -278,7 +234,6 @@ calc.tax();
 
         function callback(element, index, array) {
             let i = index;
-            // build slider
             let tableHolder = select('#tableHolder');
             tableHolder
                 .append('div')
@@ -289,7 +244,7 @@ calc.tax();
 
     slider.create();
     textInput.create();
-    table.create();
+    //table.create();
 
     function resize() {
         var newX = slider.calcLabelPos(initPos, 'slider');
