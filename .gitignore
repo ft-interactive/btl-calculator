@@ -1,0 +1,12 @@
+/node_modules/
+/bower_components/
+/dist/
+/.tmp/
+/.sass-cache/
+*.log
+npm-debug.log*
+/client/scripts/btl.sublime-project
+/client/scripts/btl.sublime-workspace
+/client/scripts/main-backup2.js
+.env
+.DS_Store

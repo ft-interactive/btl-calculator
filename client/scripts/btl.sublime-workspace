@@ -1,0 +1,867 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"let",
+				"let"
+			],
+			[
+				"for",
+				"for	for (…) {…}"
+			],
+			[
+				"ca",
+				"carryOver"
+			],
+			[
+				"blind",
+				"blindAllowance"
+			],
+			[
+				"personal",
+				"personalAllowance"
+			],
+			[
+				"perso",
+				"personalAllowance"
+			],
+			[
+				"ta",
+				"taperThreshold"
+			],
+			[
+				"format",
+				"formatPercent"
+			],
+			[
+				"med",
+				"mediaaniMittari"
+			],
+			[
+				"nimi",
+				"kunta_nimi"
+			],
+			[
+				"i",
+				"i"
+			],
+			[
+				"FLATMATE_MEDIAN_BUDGET",
+				"flatmate_median_budget"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/Users/anttisaarenpaa/Desktop/Projektit/isa/client/index.html",
+			"settings":
+			{
+				"buffer_size": 10985,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "import oHoverable from 'o-hoverable';\nimport attachFastClick from 'fastclick';\nimport { select, selectAll } from 'd3-selection';\nimport d3 from 'd3';\nimport { calculateTaxes } from './tax_calculations';\nimport { calc } from './other_calculations';\nvar numeral = require('numeral');\n\ndocument.addEventListener('DOMContentLoaded', () => {\n    // make hover effects work on touch devices\n    oHoverable.init();\n\n    // remove the 300ms tap delay on mobile browsers\n    attachFastClick(document.body);\n\n    window.addEventListener('resize', resize);\n\n    //letiables that hold the slider.values\n    let initPos = 50;\n    let timeToRetire = 40;\n    let nomReturn = 6.0;\n    let charges = 2.1;\n    let returns = 2;\n    let newCharges = 0.5;\n    let newReturns = 0;\n    let totalValue = 0;\n    let revisedValue = 0;\n    let difference = 0;\n    let feesDiff = 0;\n    let percentDif = 0;\n    let firstrun = true;\n\n    //Intial set up perameters for the sliders\n    let sliderArray = [{\n        'divID': 'testi',\n        'className': 'slideholderTop',\n        'HTML': 'Employment income',\n        'labName': 'first',\n        'pos': initPos,\n        'sliderID': 'slider',\n        'min': 0,\n        'max': 100,\n        'step': 10\n    }, {\n        'divID': 'testi2',\n        'className': 'slideholderTop',\n        'HTML': 'Spent on furnishings',\n        'labName': 'second',\n        'pos': initPos,\n        'sliderID': 'slider',\n        'min': 0,\n        'max': 100,\n        'step': 10\n    }];\n\n    let textInputArray = [{\n        'info': 'How much is your rental income after expenses per month in £?',\n        'id': 'rentalincome',\n        'initialValue': 0\n    }, {\n        'info': 'What is the property value?',\n        'id': 'propertyvalue',\n        'initialValue': 0\n    }];\n\n    let tableArray = [{\n        'rentalincome': 100,\n        'fds': 12432,\n        'fd': 12322\n    }];\n\n    //Add sliders first four siders into #inputs\n    let htmlString = '',\n        label = 0,\n        osoite = 0;\n\n    let Widget = {\n        moveLabel: function(divId, labelText, pos) {\n            let topPos = 0;\n            if ((window.innerWidth) > 640) {\n                topPos = 23;\n            } else { topPos = 21; };\n            osoite = '#' + divId;\n            label = select(osoite)\n                .html(labelText)\n                .style('top', topPos + 'px')\n                .style('left', pos + 'px');\n        },\n        numberWithCommas: function(x) {\n            return x.toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, \",\");\n        },\n        resize: function() {\n            let newX = this.calcLabelPos(initPos, 'slider');\n            this.moveLabel('savelab', initPos, newX);\n        },\n        updateText: function(lab, pos) {\n            if (initPos > 0) {\n                htmlString = this.chartText1(lab, pos);\n                let div = select('#chartText1');\n                div.html(htmlString);\n            }\n        },\n        addLabel: function(divID, labelID) {\n            let label = select('#' + String(divID)).append('div');\n            label\n                .attr('id', labelID)\n                .attr('class', 'slideLabel');\n        },\n        chartText1: function(lab, pos) {\n            let upotus = lab,\n                pos1 = pos;\n            return `\n      <div class=\"dynamichighlights\">${'Event detected! The'} ${lab} ${'slider was moved to'} ${pos1} </div>\n      `;\n        }\n    };\n    let slider = Object.create(Widget);\n    let textInput = Object.create(Widget)\n    let table = Object.create(Widget);\n    slider.sliderTemplate = function(annotations) {\n        return `\n      <div id=${annotations.divID} class=${annotations.className}>\n        <div>${annotations.HTML}</div>\n        <input class='slider' id=${annotations.sliderID} type='range' value=${annotations.pos} max=${annotations.max} min=${annotations.min} step=${annotations.step}>\n        <div class='rangeleft'>${annotations.min}</div>\n        <div class='rangeright'>${annotations.max}</div>\n        <div class=\"slideLabel\" id=${annotations.labName}></div>\n      </div>\n      `;\n    };\n\n    slider.create = function() {\n        //  let thisbind = this.moveLabel.bind(callback);\n        //  let thisbind2 = this.sliderTemplate.bind(callback);\n        sliderArray.forEach(callback);\n\n        function callback(element, index, array) {\n            let i = index;\n            // build slider\n            let slideHolder = select('#controls');\n            slideHolder\n                .append('div')\n                .attr('id', 'liuku')\n                .html(slider.sliderTemplate(sliderArray[i]));\n\n            // Let's send the stuff to moveLabel() which creates the label\n            // and positions it\n\n            slider.moveLabel(\n                sliderArray[i].labName, // the name of the slider\n                Number(sliderArray[i].pos), // the starting position of the slider\n                slider.calcLabelPos(Number(sliderArray[i].pos), // the x coordinate for the starting position\n                    sliderArray[i].sliderID) // the ID of the slider -- TODO: GET RID OF THIS\n            );\n        }\n        slider.eventListener();\n    };\n\n    slider.eventListener = function() {\n        let saveevent = selectAll('#slider'),\n            //thisbind = this.moveLabel.bind(callback),\n            callback = function(d) {\n                console.log(this.parentElement);\n                let lab = this.parentElement.children[4].id,\n                    pos = Number(this.value),\n                    newX = slider.calcLabelPos(pos, 'slider');\n                slider.moveLabel(lab, pos, newX);\n                calculateTaxes(40000);\n                slider.updateText(lab, pos);\n            };\n\n        saveevent.on('input', callback);\n\n    };\n\n    slider.calcLabelPos = function(pos, SliderID) {\n        let slider = select('#' + String(SliderID)),\n            increments = slider.node().max - slider.node().min,\n            percentage = (100 / (slider.node().max - slider.node().min) * (pos)),\n            posX = slider.node().getBoundingClientRect().width,\n            offset = ((30 / increments) * pos);\n        posX = ((posX / 100) * percentage) - offset;\n        return posX;\n    };\n\n    textInput.eventListener = function() {\n        selectAll(\".o-forms-text\").on(\"input\", function() {\n            let commasep = textInput.numberWithCommas(this.value);\n            select(this).property(\"value\", numeral(commasep).format('0,0'));\n            let output = numeral().unformat(this.value);\n            output = calc.profitBeforeTax(output);\n            console.log(output);\n            select('#tableRentalIncome').text(output)\n        });\n    }\n\n    textInput.textInputTemplate = function(object) {\n\n        return `\n          <div class=\"o-forms-group\">\n            <small class=\"o-forms-additional-info\">${object.info}</small>\n            <input type=\"text\" value=${object.initialValue} id=${object.id} placeholder=\"placeholder\" class=\"o-forms-text\"></input>\n          </div>\n      `;\n    };\n\n    textInput.create = function() {\n        //  let thisbind = this.moveLabel.bind(callback);\n        //  let thisbind2 = this.sliderTemplate.bind(callback);\n        textInputArray.forEach(callback);\n\n        function callback(element, index, array) {\n            let i = index;\n            // build slider\n            let inputHolder = select('#inputControls');\n            inputHolder\n                .append('div')\n                .attr('id', 'textInput')\n                .html(textInput.textInputTemplate(textInputArray[i]));\n\n            // Let's send the stuff to moveLabel() which creates the label\n            // and positions it\n        }\n        textInput.eventListener();\n    };\n\n    table.tableTemplate = function(object) {\n        return `\n          <table class=\"o-table \" data-o-component=\"o-table\">\n            <thead>\n            <th></th>\n            <th data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2016 <span class=\"o-table__cell--content-secondary\">(GBP)</span></th>\n              <th data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2016 <span class=\"o-table__cell--content-secondary\">(GBP)</span></th>\n              <th data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2017 <span class=\"o-table__cell--content-secondary\">(GBP)</span></th>\n                <th data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2018 <span class=\"o-table__cell--content-secondary\">(GBP)</span></th>\n                <th data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2019 <span class=\"o-table__cell--content-secondary\">(GBP)</span></th>\n                <th data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2020 <span class=\"o-table__cell--content-secondary\">(GBP)</span></th>\n            <tbody>\n                <tr>\n                    <td><b>Profit before tax</b></td>\n                    <td data-o-table-data-type=\"numeric\" id=\"tableRentalIncome2016\" class=\"o-table__cell--numeric\">${tableArray[0][\"rentalincome\"]}</td>\n                    <td data-o-table-data-type=\"numeric\" id=\"tableRentalIncome2016\" class=\"o-table__cell--numeric\">${tableArray[0][\"rentalincome\"]}</td>                   \n                </tr>\n                <tr>\n                    <td><b>Tax</b></td>\n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2</td>\n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2</td>\n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2</td>\n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">1.56</td>                    \n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">1.56</td>                    \n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">1.56</td> \n                </tr>\n                <tr>\n                    <td><b>Profit after tax</b></td>\n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2</td>\n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2</td>\n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">2</td>\n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">1.56</td>                    \n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">1.56</td>                    \n                    <td data-o-table-data-type=\"numeric\" class=\"o-table__cell--numeric\">1.56</td> \n                </tr>\n            </tbody>\n          </table>\n      `;\n    }\n\n    table.create = function () {\n        tableArray.forEach(callback);\n         function callback(element, index, array) {\n            let i = index;\n            // build slider\n            let tableHolder = select('#tableHolder');\n            tableHolder\n                .append('div')\n                .attr('id', 'resultsTable')\n                .html(table.tableTemplate(tableArray[i]));\n        }\n    }\n\n    table.inputValues = function (source, input) {\n        if (source=\"rentalincome\") {\n            output = calc.profitBeforeTax(input);\n            console.log(output);\n            selectAll('#tableRentalIncome').text(output)\n        };\n    }\n\n    slider.create();\n    textInput.create();\n    table.create();\n\n    function resize() {\n        var newX = slider.calcLabelPos(initPos, 'slider');\n        slider.moveLabel('savelab', initPos, newX);\n    }\n\n});",
+			"file": "main.js",
+			"file_size": 11663,
+			"file_write_time": 1468942362000000,
+			"settings":
+			{
+				"buffer_size": 11537,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "var numeral = require('numeral');\n\n\nlet calc = {\n	profitBeforeTax: function (input) {\n			let profits = input*12;\n			return profits\n		}\n}\n\nexport { calc }",
+			"file": "other_calculations.js",
+			"file_size": 153,
+			"file_write_time": 1468941634000000,
+			"settings":
+			{
+				"buffer_size": 153,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "   \n\nSUTTUPAPERI\n\nÄLÄ TALLENNA\n\n\n    let tableObject = [{\n        'info': 100,\n        'fds': 12432,\n        ''\n  }];",
+			"settings":
+			{
+				"buffer_size": 117,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"tern",
+				"tern_for_sublime: Describe"
+			],
+			[
+				"html prett",
+				"HTMLPrettify"
+			],
+			[
+				"html",
+				"HTMLPrettify"
+			],
+			[
+				"",
+				"Package Control: List Packages"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			],
+			[
+				"package",
+				"Package Control: List Packages"
+			],
+			[
+				"install pack",
+				"Package Control: Install Package"
+			],
+			[
+				"remove pa",
+				"Package Control: Remove Package"
+			],
+			[
+				"pa",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"jsli",
+				"JSLint"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 153.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/client/scripts/tax_calculations.js",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/client/.jscsrc",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/client/styles/main.scss",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/bower_components/o-table/.bower.json",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/.babelrc",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/bower.json",
+		"/Users/anttisaarenpaa/Library/Application Support/Sublime Text 2/Packages/HTML-CSS-JS Prettify/Default (OSX).sublime-keymap",
+		"/Users/anttisaarenpaa/Library/Application Support/Sublime Text 2/Packages/HTML-CSS-JS Prettify/HTMLPrettify.sublime-settings",
+		"/Users/anttisaarenpaa/Library/Application Support/Sublime Text 2/Packages/HTML-CSS-JS Prettify/.jsbeautifyrc",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/client/scripts/settings.js",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/client/scripts/.jscsrc",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/client/scripts/main.js",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/dist/index.html",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/client/scripts/main-backup2.js",
+		"/Users/anttisaarenpaa/Desktop/Projektit/isa/client/scripts/areaChart.js",
+		"/Users/anttisaarenpaa/Desktop/NODE/server.js",
+		"/Users/anttisaarenpaa/Desktop/NODE/route.js",
+		"/Users/anttisaarenpaa/Desktop/D3JS/stacked/.jscsrc",
+		"/Users/anttisaarenpaa/Desktop/D3JS/stacked/test.html",
+		"/Users/anttisaarenpaa/Desktop/NODE/index.js",
+		"/Users/anttisaarenpaa/Desktop/Nimetön kansio/yle_ennakkotehtavat/scripts/script.js",
+		"/Users/anttisaarenpaa/Desktop/yle_koodari/web-starter-kit-0.6.3/app/scripts/main.js",
+		"/Users/anttisaarenpaa/Desktop/yle_koodari/web-starter-kit-0.6.3/app/scripts/script.js",
+		"/Users/anttisaarenpaa/Desktop/yle_koodari/web-starter-kit-0.6.3/docs/commands.md",
+		"/Users/anttisaarenpaa/Desktop/yle_koodari/web-starter-kit-0.6.3/app/basic.html",
+		"/Users/anttisaarenpaa/Desktop/LGT/icons/2000-2008.svg",
+		"/Users/anttisaarenpaa/Downloads/fullPage.js-master/examples/horizBarChart.css",
+		"/Users/anttisaarenpaa/Downloads/fullPage.js-master/examples/index.js",
+		"/Users/anttisaarenpaa/Downloads/fullPage.js-master/examples/barchart.js",
+		"/Users/anttisaarenpaa/Downloads/fullPage.js-master/examples/examples.css",
+		"/Users/anttisaarenpaa/Downloads/fullPage.js-master/jquery.fullPage.css",
+		"/Users/anttisaarenpaa/Downloads/fullPage.js-master/pure javascript (Alpha)/javascript.fullPage.css",
+		"/Users/anttisaarenpaa/Downloads/fullPage.js-master/examples/responsiveHeight.html",
+		"/Users/anttisaarenpaa/Downloads/fullPage.js-master/examples/circle.css",
+		"/Users/anttisaarenpaa/Desktop/lataukset/css-circle/index.html",
+		"/Users/anttisaarenpaa/Downloads/fullPage.js-master/examples/backgroundVideo.html",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/js/spareroom.css",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/_includes/index.js",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/_config.yml",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/_includes/image.html",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/_includes/head.html",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/_includes/lontoo.html",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/_posts/2015-11-21-lontoo.md",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/_posts/2015-09-06-lorem-ipsum.md",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/_site/js/spareroom.css",
+		"/Users/anttisaarenpaa/Desktop/sivusto 2/.gitignore",
+		"/Users/anttisaarenpaa/Library/Application Support/Sublime Text 2/Packages/Package Control/Package Control.sublime-settings",
+		"/Users/anttisaarenpaa/Desktop/sivusto/assets/core.scss"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"<open folders>",
+			"/private/var/folders/0j/zm1j6fnd6g12j94xprkyzxx00000gn/T/9980dbcd-926a-4981-b3f2-84fac4f561a6/home/users/dshells/ksjou/html/kalenteri/calend,/Users/anttisaarenpaa/Desktop/kalenteri_poista/calendare,/Users/anttisaarenpaa/Desktop/kalenteri_poista/calendare",
+			"/private/var/folders/0j/zm1j6fnd6g12j94xprkyzxx00000gn/T/9980dbcd-926a-4981-b3f2-84fac4f561a6/home/users/dshells/ksjou/html/kalenteri/calend",
+			"/private/var/folders/0j/zm1j6fnd6g12j94xprkyzxx00000gn/T/9980dbcd-926a-4981-b3f2-84fac4f561a6/home/users/dshells/ksjou/html/kalenteri/calendare",
+			"",
+			"<index.js>",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"data",
+			"table",
+			"textinput",
+			"input",
+			"bread",
+			"hoverable",
+			"o-hoverable",
+			"table",
+			"hover",
+			"table",
+			"bower_components",
+			"mustard",
+			"cutthe",
+			"hover",
+			"thisbind",
+			"initPos",
+			"savePerYear",
+			"sltesti",
+			"sliderObject",
+			"slideValues",
+			"updateText",
+			"calcLAB",
+			"slider",
+			"create",
+			"resize",
+			"sliderr",
+			"labValue",
+			"LABvALUE",
+			"controls",
+			"template",
+			"let lab",
+			"slideValues",
+			"createLabel",
+			"move",
+			"moves",
+			"labelText",
+			"addLabel",
+			"saveevent",
+			"moveLabel",
+			"console.log",
+			"htmlString",
+			"topPos",
+			"var",
+			"calculateT",
+			"7600",
+			"taxbands",
+			"calcPersonal",
+			"details",
+			"calculateTa",
+			"calculateTaxe",
+			"var",
+			"moreTax",
+			"totalTax",
+			"difference",
+			"taxableIncome",
+			"taperDeduc",
+			"testslider",
+			"savePerYear",
+			"savings",
+			"pos",
+			"updateTe",
+			"format",
+			"updateText",
+			"template",
+			"select",
+			"selectAll",
+			"sltesti",
+			"savelab",
+			"sltesti",
+			"slsave",
+			"sltesti",
+			"sl",
+			"testi",
+			"sltesti",
+			"sl",
+			"slsave",
+			"slider",
+			"slsave",
+			"updateRange",
+			"calcLabel",
+			"slsave",
+			"Savings £",
+			"Savings",
+			"var htmlString",
+			"node()",
+			"getBounding",
+			"mo",
+			"calcLabelPos",
+			"slideholder",
+			"slideHolder",
+			"control",
+			"CONTROLS",
+			"LINE",
+			"MOVElaBEL",
+			"MOVElABEL",
+			"slider",
+			"sliderTemplate",
+			"slider",
+			"svg",
+			"axis",
+			"max",
+			"d3.scale.linear",
+			"d3",
+			"d3.select",
+			"d3",
+			"d3.select",
+			"d3",
+			"select",
+			"let",
+			"income",
+			"let income",
+			"income",
+			"diffence",
+			"taperThres",
+			"console",
+			"select",
+			"sub-unit",
+			"tick",
+			"tickåp",
+			"tick",
+			"Decem",
+			"year",
+			"make_",
+			"make",
+			"xAxis",
+			"tick",
+			"xAxis",
+			"Ticks"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"initPos",
+			"slider",
+			"sliderArray",
+			"sliderObject",
+			"let",
+			"slider",
+			"slsave",
+			"sltesti",
+			"slsave",
+			"testi",
+			"scaleLinear",
+			"select",
+			"var",
+			"difference",
+			"",
+			"kunnat_merge",
+			"kunta",
+			"luku",
+			"",
+			"</path>  <text x=\"50%\" y=\"50%\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"18px\" fill=\"red\">322</text>",
+			"PRICE_BUDGET",
+			"area"
+		],
+		"reverse": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/Users/anttisaarenpaa/Desktop/Projektit/isa/client/index.html",
+					"settings":
+					{
+						"buffer_size": 10985,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5232,
+								5232
+							]
+						],
+						"settings":
+						{
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110.0
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"devel": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": "load-save",
+							"sublimelinter_delay": 2.0,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2720.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "main.js",
+					"settings":
+					{
+						"buffer_size": 11537,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9197,
+								9197
+							]
+						],
+						"settings":
+						{
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"color_scheme": "Packages/User/Color Highlighter/themes/Monokai.tmTheme",
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110.0
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"devel": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": "load-save",
+							"sublimelinter_delay": 2.0,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3226.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "other_calculations.js",
+					"settings":
+					{
+						"buffer_size": 153,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								130,
+								130
+							]
+						],
+						"settings":
+						{
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110.0
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"devel": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": "load-save",
+							"sublimelinter_delay": 2.0,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"settings":
+					{
+						"buffer_size": 117,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4,
+								4
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 273.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"",
+				"test.html"
+			],
+			[
+				"play",
+				"/Users/anttisaarenpaa/Desktop/yle_koodari/web-starter-kit-0.6.3/app/styles/main.css"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 248.0,
+	"status_bar_visible": true
+}
