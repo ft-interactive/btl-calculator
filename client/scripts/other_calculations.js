@@ -41,7 +41,7 @@ let calc = {
 			employmentIncome: 100000,
 		}
 		let employmentTaxes = calculateTaxes(objekti.employmentIncome)
-
+		console.log(employmentTaxes)
 		let old_WTdeductions = objekti.rentalincome * 0.1
 		let WTdeductions = 500;
 		let otherTaxDeductions = 500;
@@ -57,9 +57,10 @@ let calc = {
 				"2019": 0.25,
 				"2020": 0,
 			}
-			let r = objekti.map(function(value, key, object) {
-		     return key + " morjestaa";
-		  	});
+
+			// The changes step into effect gradually. Due to this, we have to 
+
+			// 1. First we count how much of the interest payments are taxable for each year 2016,2017...2020. This is handy in further calculations. 
 		  	
 			let interestTaxable	= interestRelief.map(function(value, key, object) 
 			{
@@ -67,7 +68,7 @@ let calc = {
 			});				
 
 			
-			
+			// 2. Then count how much of the interest payments are taxable for each year 2016,2017...2020. This is needed in step 
 			let interestReliefPounds = interestRelief.map(function(value, key, object)
 			{
 				return objekti.interestPayments * value 
@@ -75,10 +76,12 @@ let calc = {
 
 			let i=-1;
 
+
+			// 3. We also have to take into account
 			let taxableAmountNewWT = interestRelief.map(function(value, key, object)
 			{
 				i += 1
-				return objekti.rentalincome - interestReliefPounds[Object.keys(interestReliefPounds)[i]] - WTdeductions - otherTaxDeductions;
+				return objekti.rentalincome - interestReliefPounds[Object.keys(interestReliefPounds)[i]] - WTdeductions;
 			    
 			});
 
@@ -90,6 +93,10 @@ let calc = {
 				return value + WTDifference;	    
 			});
 
+
+
+			// Next, let's calculate TAXES, DEDUCTIONS and PROFIT AFTER TAXES under NEW Wear & and Tear (WT) rules
+
 			i=-1;
 
 			let newWTTax = taxableAmountNewWT.map(function(value, key, object)
@@ -98,12 +105,83 @@ let calc = {
 				return calculateTaxes(objekti.employmentIncome + value) - employmentTaxes;	    
 			});
 
+			i= -1
+
+			let newWTTaxDeductionInterestRelief = interestTaxable.map(function(value, key,object)
+			{
+					i += 1
+					
+					if ((value * 0.2) > newWTTax[Object.keys(newWTTax)[i]]) {
+						
+						return newWTTax[Object.keys(newWTTax)[i]]
+					} else {
+					
+						return value * 0.2;	
+					};
+			});
+
+			i = -1
+			let newWTTotalTax = newWTTax.map(function(value, key,object)
+			{
+				i+=1
+				return value - newWTTaxDeductionInterestRelief[Object.keys(newWTTaxDeductionInterestRelief)[i]]
+			});
+
+			i = -1
+			let newWTProfitAfterTax = newWTTotalTax.map(function(value, key,object)
+			{
+				i+=1
+			return	objekti.rentalincome - objekti.interestPayments  - WTdeductions - otherTaxDeductions - value;
+
+			});
+
+			// Unfortunately, next we have to do the same for old wear and tear rules...
+
+			// TAXES, DEDUCTIONS and PROFIT AFTER TAXES under OLD Wear & and Tear rules
+
+
+			i = -1
+			let oldWTTax = taxableAmountOldWT.map(function(value, key, object)
+			{
+				i += 1
+				return calculateTaxes(objekti.employmentIncome + value) - employmentTaxes;	    
+			});
+
+			i = -1
+
+			let oldWTTaxDeductionInterestRelief = interestTaxable.map(function(value, key,object)
+			{
+					i += 1
+					
+					if ((value * 0.2) > newWTTax[Object.keys(oldWTTax)[i]]) {
+						
+						return oldWTTax[Object.keys(oldWTTax)[i]]
+					} else {
+					
+						return value * 0.2;	
+					};
+			});
+
+
+			i = -1
+			let oldWTTotalTax = oldWTTax.map(function(value, key,object)
+			{
+				i+=1
+				return value - oldWTTaxDeductionInterestRelief[Object.keys(oldWTTaxDeductionInterestRelief)[i]]
+			});
+
+			i = -1
+			let oldWTProfitAfterTax = oldWTTotalTax.map(function(value, key,object)
+			{
+				i+=1
+			return	objekti.rentalincome - objekti.interestPayments  - WTdeductions - otherTaxDeductions - value;
+
+			});
 
 
 
-			
-				
-	console.log(newWTTax)
+	console.log(taxableAmountOldWT)
+	console.log(oldWTTotalTax)
 	}
 };
 
