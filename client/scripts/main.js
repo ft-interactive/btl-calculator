@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'className': 'slideholderTop',
         'HTML': 'Interest rate',
         'labName': 'second',
-        'pos': 90,
+        'pos': 4.5,
         'labelcss': 'slideLabelSmall',
         'sliderID': 'slider',
         'min': 0,
@@ -90,6 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let source = this.id;
             Widget.inputValues(source, output);
             select("#chartText2").style("visibility", "visible");
+            select("#depositNumber").text(calc.depositNumber);
+            select("#percentageNumber").text(calc.leveragePercentage);
         });
 
         let saveevent = selectAll('#slider'),
@@ -103,6 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("tässä" + calculateTaxes(40000));
                 thisbind(lab, pos);
             select("#chartText2").style("visibility", "visible");
+            select("#percentageNumber").text(calc.leveragePercentage);
+            select("#depositNumber").text(calc.depositNumber);
             };
         saveevent.on('input', callback); 
         }

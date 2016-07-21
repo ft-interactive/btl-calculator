@@ -2,6 +2,9 @@ const numeral = require('numeral');
 import { calculateTaxes } from './tax_calculations';
 
 
+let depositNumber = 35; 
+let percentageNumber = 4;
+
 // This function is "array.map" but works with object
 // vanilla alternative for lodash#mapValues
 
@@ -21,6 +24,15 @@ let calc = {
 			let profits = input*12;
 			return profits
 		},
+
+	depositNumber: function (input) {
+		return depositNumber += 10
+	},
+
+	leveragePercentage: function (input) {
+		return percentageNumber += 0.5
+	},
+
 	tax: function(object2) {
 		
 		let objekti =  {
