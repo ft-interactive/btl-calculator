@@ -1,12 +1,14 @@
 $o-grid-is-silent: false;
 $o-table-is-silent: false;
 $o-forms-is-silent: false;
+$o-big-number-is-silent: false;
 
 @import 'n-normalize/main';
 @import 'o-colors/main';
 @import 'o-grid/main';
 @import 'o-table/main';
 @import 'o-forms/main';
+@import 'o-big-number/main';
 
 $font-sans: MetricWeb, sans-serif;
 $font-serif: Georgia, serif;
@@ -92,7 +94,7 @@ p {
 }
 
 .outputs{
-  margin-top: 10px;
+  margin-top: 0px;
   display: block;
   font-weight: 500;
 }
@@ -153,6 +155,10 @@ p {
   color: #43423e;
 }
 
+.question {
+  margin-bottom: 10px
+}
+
 .slideLabelBig {
   font-family: MetricWeb;
   background-color: #bb6d82;
@@ -180,6 +186,14 @@ p {
   font-weight: 400;
 }
 
+.resultsTable {
+  margin-top: 10px;
+}
+
+.table {
+  padding-left:12px;
+  margin-top: 10px;
+}
 //Charts styling
 .dots {
   fill:#ffffff;

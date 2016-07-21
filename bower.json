@@ -7,6 +7,7 @@
     "o-hoverable": "~3.0.0",
     "o-grid": "~4.0.6",
     "o-table": "~5.0.1",
-    "o-forms": "~2.0.4"
+    "o-forms": "~2.0.4",
+    "o-big-number": "~1.1.3"
   }
 }

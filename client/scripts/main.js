@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'id': 'rentalincome',
         'initialValue': 0
     }, {
-        'info': 'What is the property value?',
+        'info': 'How much is the property worth?',
         'id': 'propertyvalue',
         'initialValue': 0
     }];
@@ -202,10 +202,12 @@ calc.tax();
     textInput.textInputTemplate = function(object) {
 
         return `
+        <div class="textInput">
           <div class="o-forms-group">
-            <small class="o-forms-additional-info">${object.info}</small>
+            <div class="question">${object.info}</div>
             <input maxlength="7" type="text" value=${object.initialValue} id=${object.id} placeholder="placeholder" class="o-forms-text"></input>
           </div>
+        </div>
       `;
     };
 
