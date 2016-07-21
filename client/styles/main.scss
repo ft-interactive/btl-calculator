@@ -22,6 +22,22 @@ body {
   font-family: $font-sans;
 }
 
+.o-big-number{
+    font-family: MetricWeb, sans-serif;
+    color: #333;
+    border-left: 0px;
+    padding-left: 0px;
+}
+
+.o-big-number__title {
+  display: block;
+  color: #bb6d82;
+  font-size: 4em;
+  font-weight: bold;
+  line-height: 1em;
+}
+
+
 
 .site-header {
   padding: 14px 0 10px;
