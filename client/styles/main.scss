@@ -33,17 +33,20 @@ body {
     color: #333;
     border-left: 0px;
     padding-left: 0px;
+    margin-top: 12px;
 }
 
+.o-big-number--standard {
+  text-align: left;
+  font-size: 18px;
+}
 .o-big-number__title {
   display: block;
   color: #bb6d82;
-  font-size: 4em;
-  font-weight: bold;
+  font-size: 2em;
+  font-weight: 600;
   line-height: 1em;
 }
-
-
 
 .site-header {
   padding: 14px 0 10px;
@@ -170,12 +173,14 @@ p {
 }
 
 .o-big-number__content {
-  font-size: 16px;
+  font-size: 14px;
   color: oColorsGetPaletteColor('grey-tint3');
 }
 
 .dynamictext {
+  font-size: 18px;
   margin-top: 20px;
+  margin-bottom: 10px;
   color: oColorsGetPaletteColor('grey-tint5');
   .dynamictext__highlights {
     color: #76acb8;
@@ -194,6 +199,13 @@ p {
 
 .o-forms-group {
   padding: 0;
+}
+
+.o-forms-text {
+  color: #505050;
+  font-family: MetricWeb, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
 }
 .inputs{
   float: left;
@@ -310,9 +322,8 @@ p {
 .title {
   font-family: oFontsGetFontFamilyWithFallbacks(MetricWeb);
   display: block;
-  color: #bb6d82;
   font-size: 1.5em;
-  font-weight: bold;
+  color: oColorsGetPaletteColor('grey-tint5');
 }
 .table {
   padding-left:12px;
@@ -365,10 +376,6 @@ p {
   fill: #bb6d82;
 }
 
-.dynamicHolder{
-  margin-top: 20px;
-}
-
 .dynamicText{
   font-family: MetricWeb;
   font-weight: 400;
@@ -415,6 +422,12 @@ p {
       height: 50px;
     }
   }
+  .o-big-number__title {
+    font-size: 3em;
+  }
+  .o-big-number--standard {
+    text-align: center;
+  }
 }
 
 @include oGridRespondTo(M) {
@@ -438,7 +451,7 @@ p {
   }
   p {
     font-size: 20px;
-    margin: 15px 0 0 0;
+    margin: 10px 0 0 0;
   }
 
   .site-header {
@@ -457,14 +470,21 @@ p {
   .byline {
     font: 16px/1.20 FinancierText;
   }
-
+  .dynamictext {
+    font-size: 22px;
+  }
   .pressentation {
     display: block;
     margin: 0 auto;
     font-size: 18px;
     // max-width: 744px; 
   }
-  
+  .o-big-number--standard {
+    font-size: 22px;
+  }
+  .o-big-number__content {
+    font-size: 16px;
+  }
   .inputs{
     margin-top: 20px;
   }
@@ -503,10 +523,6 @@ p {
 
   .axis {
     font-size: 20px;
-  }
-
-  .dynamicHolder{
-    margin-top: 20px;
   }
 
   .dynamicText{
