@@ -22,14 +22,14 @@ numeral.language('en-gb');
             switch (source) {
                 case "rentalIncome":
                     userInputHolders.rentalIncome = input * 12
-                    console.log(userInputHolders.rentalIncome)
-                    calc.loanCalculations("new"); 
+                    calc.loanCalculations(); 
+                    calc.stampDutyCalculations();
                     selectAll('#tableRentalIncome').text(output);
                     break;
                 case "employment":
                     userInputHolders.employment = input;
                     selectAll('#tableTax').text(output);
-                    calc.loanCalculations("new"); 
+                    calc.loanCalculations(); 
                     break;
                 case "interestRate":
                     userInputHolders.interestRate = input / 100;
@@ -37,14 +37,24 @@ numeral.language('en-gb');
                     break;
                 case "propertyValue":
                     userInputHolders.propertyValue = input;
-                    calc.loanCalculations("new"); 
+                    calc.loanCalculations(); 
+                    calc.stampDutyCalculations();
                     selectAll('#tableTax').text(output);
                     break;
                 case "calcLoan":
-                    let output = 0;
-                    input = input || 0;
-                    output = numeral(input).format('0%');
-                    select("#percentageNumber").text(output);
+                    let leverage = input["LTVDifference"] || 0;
+                    leverage = numeral(leverage).format('0%');
+                    let deposit = input["depositDifference"] || 0;
+                    deposit = numeral(deposit).format('($0a)');
+                    select("#percentageNumber").text(leverage);
+                    select("#depositNumber").text(deposit);
+                    break;
+                case "stampDuty":
+                    let difference = input["difference"] || 0;
+                    difference = numeral(difference).format('($0a)');
+                    let newStampDuty = input["new"] || 0;
+                    newStampDuty = numeral(newStampDuty).format('($0a)');
+                    select("#stampDutyNumber").text(difference);
                 };
                 select("#rentalIncomeResult").text(numeral(userInputHolders.rentalIncome/12).format('$0,0[.]00'));
                 select("#housePriceResult").text(numeral(userInputHolders.propertyValue).format('$0,0[.]00'));

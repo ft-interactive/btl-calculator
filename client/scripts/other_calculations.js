@@ -1,7 +1,7 @@
 const numeral = require('numeral');
 import { router } from './main';
 import { calculateTaxes } from './tax_calculations';
-import { taxbands, details, personalAllowance, userInputHolders } from './settings'
+import { taxbands, details, personalAllowance, userInputHolders, stampDutySettings } from './settings'
 
 let depositNumber = 35; 
 let percentageNumber = 4;
@@ -23,40 +23,86 @@ Object.defineProperty(Object.prototype, 'map', {
 });
 
 let calc = {
-		loanCalculations: function (input) {
-		
-					
-					let floor = 0;
-					input === "new" ? floor = userInputHolders.floorNew : floor = userInputHolders.floorOld; 
-					(function () {
-					let depositNotChecked = -((userInputHolders.rentalIncome - floor * (userInputHolders.stressTestIR * userInputHolders.propertyValue)) / (userInputHolders.stressTestIR * floor));
-					let depositChecked = 0;
-					// Because the lenders (usually) expect the deposit to be AT LEAST 25 % property value,
-					// let's check it
-					if (depositNotChecked/userInputHolders.propertyValue <= 0.25) {
-						depositChecked = userInputHolders.propertyValue * 0.25;
-					} else { 
-						depositChecked = depositNotChecked;
-					};
+		loanCalculations: function () {
+			let doCalcs = function (floor) {
+				let depositNotChecked = -((userInputHolders.rentalIncome - floor * (userInputHolders.stressTestIR * userInputHolders.propertyValue)) / (userInputHolders.stressTestIR * floor));
+				let depositChecked = 0;
+			
+				if (depositNotChecked/userInputHolders.propertyValue <= 0.25) {
+					depositChecked = userInputHolders.propertyValue * 0.25;
+				} else { 
+					depositChecked = depositNotChecked;
+				};
 
-					let principal = userInputHolders.propertyValue - depositChecked;
-					let maxLTV = principal / userInputHolders.propertyValue;
-					
-					let array = [depositChecked, principal, maxLTV]
-					console.log("tänne päästiin" + maxLTV)
-					router("calcLoan", maxLTV, "moi");
-				})();
+				let principal = userInputHolders.propertyValue - depositChecked;
+				let maxLTV = principal / userInputHolders.propertyValue;
+				
+				let array = [depositChecked, principal, maxLTV]
+				return array
+			}
+			let newRulesArray = doCalcs(userInputHolders.floorNew);
+			let oldRulesArray = doCalcs(userInputHolders.floorOld);
+
+			let passObject = {
+				"depositDifference": newRulesArray[0] - oldRulesArray[0],
+				"LTVDifference": oldRulesArray[2] - newRulesArray[2],
+				"LTV": newRulesArray[2],
+				"Principal": newRulesArray[1],
+				"Deposit": newRulesArray[1]
+			}
+			router("calcLoan", passObject);	
+				
 		},
+
+		stampDutyCalculations: function () {
+
+			let doCalcs = function (Array1, Array2) {
+
+				// TODO: Tidy this
+
+				function callback (element, index, array) {
+					let value = userInputHolders.propertyValue > element
+					value = value ? 1 : 0 
+					return value
+				}
+				let trueOrFalse = Array1.map(callback); // Returns array containing 0 or 1 x4
+
+				function callback2 (element, index, array) {
+					return userInputHolders.propertyValue - element
+				}
+
+				let taxableAmounts = Array1.map(callback2); 
+
+				
+
+				function callback3 (element, index, array) {
+					return taxableAmounts[index] * trueOrFalse[index] * element 
+				}
+
+				let totalArray = Array2.map(callback3)
+				let sum = totalArray.reduce(function(a, b) { return a + b; }, 0);
+				
+				console.log(sum)
+				return sum	
+
+			}
+
+			let newRulesSum = doCalcs(stampDutySettings.newLimits, stampDutySettings.newTaxBrackets);
+			let oldRulesSum = doCalcs(stampDutySettings.oldLimits, stampDutySettings.oldTaxBrackets);
+
+			let passObject = {
+				"difference": newRulesSum - oldRulesSum,
+				"new": newRulesSum
+			}
+
+			router("stampDuty", passObject);	
+
+
+		},
+
 		tax: function(object2) {
 
 
-				// pass these to stampDuty()
-				let oldArray1 = [125000,250000,925000,1500000]
-				let oldArray2 = [0.02, 0.03, 0.05, 0.02]
-			
-				// or these 
-				let newArray1 = [0,125000,250000,925000,1500000]
-				let newArray2 = [0.03,0.02,0.03,0.05,0.02]
 			
 
 			function stampDuty (Array1, Array2) {

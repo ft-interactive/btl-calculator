@@ -31,6 +31,15 @@ let userInputHolders = {
     interestRate: 0,
     stressTestIR: 0.055,
     floorNew: 1.45,
+    floorOld: 1.25,
+};
+
+let stampDutySettings = {
+
+      oldLimits: [125000,250000,925000,1500000],
+      oldTaxBrackets: [0.02, 0.03, 0.05, 0.02],
+      newLimits: [0,125000,250000,925000,1500000],
+      newTaxBrackets: [0.03,0.02,0.03,0.05,0.02]
 };
 
 let languageSettings = {
@@ -59,4 +68,5 @@ let languageSettings = {
 
 
 
-export { taxbands, details, personalAllowance, userInputHolders, languageSettings}
+
+export { taxbands, details, personalAllowance, userInputHolders, languageSettings, stampDutySettings }
