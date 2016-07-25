@@ -24,4 +24,39 @@ let personalAllowance = {
   taperThreshold:	100000,
 };
 
-export { taxbands, details, personalAllowance }
+let userInputHolders = {
+    propertyValue: 0,
+    employment: 0,
+    rentalIncome: 0,
+    interestRate: 0,
+    stressTestIR: 0.055,
+    floorNew: 1.45,
+};
+
+let languageSettings = {
+   delimiters: {
+            thousands: ',',
+            decimal: '.'
+        },
+        abbreviations: {
+            thousand: 'k',
+            million: 'm',
+            billion: 'b',
+            trillion: 't'
+        },
+        ordinal: function (number) {
+            var b = number % 10;
+            return (~~ (number % 100 / 10) === 1) ? 'th' :
+                (b === 1) ? 'st' :
+                (b === 2) ? 'nd' :
+                (b === 3) ? 'rd' : 'th';
+        },
+        currency: {
+            symbol: '£'
+        }
+};
+
+
+
+
+export { taxbands, details, personalAllowance, userInputHolders, languageSettings}

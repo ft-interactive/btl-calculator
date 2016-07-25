@@ -1,10 +1,13 @@
 const numeral = require('numeral');
+import { router } from './main';
 import { calculateTaxes } from './tax_calculations';
-
+import { taxbands, details, personalAllowance, userInputHolders } from './settings'
 
 let depositNumber = 35; 
 let percentageNumber = 4;
 
+
+// IS THIS NEEDED ANYMORE?
 // This function is "array.map" but works with object
 // vanilla alternative for lodash#mapValues
 
@@ -20,35 +23,80 @@ Object.defineProperty(Object.prototype, 'map', {
 });
 
 let calc = {
-	profitBeforeTax: function (input) {
-			let profits = input*12;
-			return profits
-		},
-
-	depositNumber: function (input) {
-		return depositNumber += 10
-	},
-
-	leveragePercentage: function (input) {
-		return percentageNumber += 0.5
-	},
-
-	tax: function(object2) {
+		loanCalculations: function (input) {
 		
-		let objekti =  {
-			rentalincome: 25800,
-			interestPayments: 12940.43887,
-			employmentIncome: 100000,
-		}
+					
+					let floor = 0;
+					input === "new" ? floor = userInputHolders.floorNew : floor = userInputHolders.floorOld; 
+					(function () {
+					let depositNotChecked = -((userInputHolders.rentalIncome - floor * (userInputHolders.stressTestIR * userInputHolders.propertyValue)) / (userInputHolders.stressTestIR * floor));
+					let depositChecked = 0;
+					// Because the lenders (usually) expect the deposit to be AT LEAST 25 % property value,
+					// let's check it
+					if (depositNotChecked/userInputHolders.propertyValue <= 0.25) {
+						depositChecked = userInputHolders.propertyValue * 0.25;
+					} else { 
+						depositChecked = depositNotChecked;
+					};
+
+					let principal = userInputHolders.propertyValue - depositChecked;
+					let maxLTV = principal / userInputHolders.propertyValue;
+					
+					let array = [depositChecked, principal, maxLTV]
+					console.log("tänne päästiin" + maxLTV)
+					router("calcLoan", maxLTV, "moi");
+				})();
+		},
+		tax: function(object2) {
+
+
+				// pass these to stampDuty()
+				let oldArray1 = [125000,250000,925000,1500000]
+				let oldArray2 = [0.02, 0.03, 0.05, 0.02]
+			
+				// or these 
+				let newArray1 = [0,125000,250000,925000,1500000]
+				let newArray2 = [0.03,0.02,0.03,0.05,0.02]
+			
+
+			function stampDuty (Array1, Array2) {
+
+				// TODO: Tidy this
+
+				function callback (element, index, array) {
+					let value = objekti.propertyValue > element
+					value = value ? 1 : 0 
+					return value
+				}
+				let trueOrFalse = Array1.map(callback); // Returns array containing 0 or 1 x4
+
+				function callback2 (element, index, array) {
+					return objekti.propertyValue - element
+				}
+
+				let taxableAmounts = Array1.map(callback2); 
+
+				
+
+				function callback3 (element, index, array) {
+					return taxableAmounts[index] * trueOrFalse[index] * element 
+				}
+
+				let totalArray = Array2.map(callback3)
+				let sum = totalArray.reduce(function(a, b) { return a + b; }, 0);
+				
+				console.log(sum)
+				return sum
+			}
+
 		let employmentTaxes = calculateTaxes(objekti.employmentIncome)
-		console.log(employmentTaxes)
-		let old_WTdeductions = objekti.rentalincome * 0.1
+		let old_WTdeductions = objekti.rentalIncome * 0.1
 		let WTdeductions = 500;
 		let otherTaxDeductions = 500;
 		let WTDifference = WTdeductions - old_WTdeductions; 
 
 
-		let profits = objekti.rentalincome * 12,
+		let profits = objekti.rentalIncome * 12,
 			profitBeforeTax = profits - WTdeductions,
 			interestRelief = {
 				"2016": 1,
@@ -58,130 +106,60 @@ let calc = {
 				"2020": 0,
 			}
 
-			// The changes step into effect gradually. Due to this, we have to 
-
-			// 1. First we count how much of the interest payments are taxable for each year 2016,2017...2020. This is handy in further calculations. 
-		  	
-			let interestTaxable	= interestRelief.map(function(value, key, object) 
-			{
-				return objekti.interestPayments - value * objekti.interestPayments
-			});				
-
+		let interestReliefArray = [["2016", 1], ["2017", 0.75], ["2018",0.5], ["2019", 0.25], ["2020", 0]];
 			
-			// 2. Then count how much of the interest payments are taxable for each year 2016,2017...2020. This is needed in step 
-			let interestReliefPounds = interestRelief.map(function(value, key, object)
-			{
-				return objekti.interestPayments * value 
-			});
+			let i = -1;
+			let interestTaxable = [],
+				interestReliefPounds = [],
+				taxableAmountNewWT = [],
+				taxableAmountOldWT = [],
+				WTTax = [],
+				WTTaxDeductionInterestRelief = [],
+				WTTotalTax = [],
+				WTProfitAfterTax = [];	
 
-			let i=-1;
-
-
-			// 3. We also have to take into account
-			let taxableAmountNewWT = interestRelief.map(function(value, key, object)
-			{
-				i += 1
-				return objekti.rentalincome - interestReliefPounds[Object.keys(interestReliefPounds)[i]] - WTdeductions;
-			    
-			});
-
-
-			i=-1;
-			let taxableAmountOldWT = taxableAmountNewWT.map(function(value, key, object)
-			{
-				i += 1
-				return value + WTDifference;	    
-			});
-
-
-
-			// Next, let's calculate TAXES, DEDUCTIONS and PROFIT AFTER TAXES under NEW Wear & and Tear (WT) rules
-
-			i=-1;
-
-			let newWTTax = taxableAmountNewWT.map(function(value, key, object)
-			{
-				i += 1
-				return calculateTaxes(objekti.employmentIncome + value) - employmentTaxes;	    
-			});
-
-			i= -1
-
-			let newWTTaxDeductionInterestRelief = interestTaxable.map(function(value, key,object)
-			{
-					i += 1
-					
-					if ((value * 0.2) > newWTTax[Object.keys(newWTTax)[i]]) {
-						
-						return newWTTax[Object.keys(newWTTax)[i]]
-					} else {
-					
-						return value * 0.2;	
-					};
-			});
-
-			i = -1
-			let newWTTotalTax = newWTTax.map(function(value, key,object)
+			interestReliefArray.map(function(value, key, object)
 			{
 				i+=1
-				return value - newWTTaxDeductionInterestRelief[Object.keys(newWTTaxDeductionInterestRelief)[i]]
+				interestTaxable.push(objekti.interestPayments - value[1] * objekti.interestPayments);
+				interestReliefPounds.push(objekti.interestPayments * value[1]); 
+				taxableAmountNewWT.push(objekti.rentalIncome - interestReliefPounds[i] - WTdeductions);
+				taxableAmountOldWT.push(taxableAmountNewWT[i] + WTDifference);
 			});
+			console.log(taxableAmountNewWT, taxableAmountOldWT)
 
-			i = -1
-			let newWTProfitAfterTax = newWTTotalTax.map(function(value, key,object)
-			{
-				i+=1
-			return	objekti.rentalincome - objekti.interestPayments  - WTdeductions - otherTaxDeductions - value;
+			let WTCalcs = function (input) {
+				let WTTax = [],
+					WTTaxDeductionInterestRelief = [],
+					WTTotalTax = [],
+					WTProfitAfterTax = [];	
 
-			});
+			    i=-1;
 
-			// Unfortunately, next we have to do the same for old wear and tear rules...
+				input.map(function(value, key, object) 
+					{
+						i += 1
+						WTTax.push(calculateTaxes(objekti.employmentIncome + value) - employmentTaxes)		
+						let interestTaxableV = interestTaxable[Object.keys(interestTaxable)[i]] 		
+						let dummy = 0;
+								if ((interestTaxableV * 0.2) > WTTax[i]) {
+									dummy = WTTax[i];
+								} else {								
+									dummy = interestTaxableV * 0.2;	
+								};
+						WTTaxDeductionInterestRelief.push(dummy)
+						WTTotalTax.push(WTTax[i] - WTTaxDeductionInterestRelief[i])
+						WTProfitAfterTax.push(objekti.rentalIncome - objekti.interestPayments  - WTdeductions - otherTaxDeductions - WTTotalTax[i])	
+						});
 
-			// TAXES, DEDUCTIONS and PROFIT AFTER TAXES under OLD Wear & and Tear rules
+				return [WTTotalTax, WTProfitAfterTax];	
 
+			}
 
-			i = -1
-			let oldWTTax = taxableAmountOldWT.map(function(value, key, object)
-			{
-				i += 1
-				return calculateTaxes(objekti.employmentIncome + value) - employmentTaxes;	    
-			});
+			let response = [["Old Wear & Tear Rules", WTCalcs(taxableAmountOldWT)], ["New Wear & Tear Rules", WTCalcs(taxableAmountNewWT)]]
+			console.log(objekti)
+			return response;
 
-			i = -1
-
-			let oldWTTaxDeductionInterestRelief = interestTaxable.map(function(value, key,object)
-			{
-					i += 1
-					
-					if ((value * 0.2) > newWTTax[Object.keys(oldWTTax)[i]]) {
-						
-						return oldWTTax[Object.keys(oldWTTax)[i]]
-					} else {
-					
-						return value * 0.2;	
-					};
-			});
-
-
-			i = -1
-			let oldWTTotalTax = oldWTTax.map(function(value, key,object)
-			{
-				i+=1
-				return value - oldWTTaxDeductionInterestRelief[Object.keys(oldWTTaxDeductionInterestRelief)[i]]
-			});
-
-			i = -1
-			let oldWTProfitAfterTax = oldWTTotalTax.map(function(value, key,object)
-			{
-				i+=1
-			return	objekti.rentalincome - objekti.interestPayments  - WTdeductions - otherTaxDeductions - value;
-
-			});
-
-
-
-	console.log(taxableAmountOldWT)
-	console.log(oldWTTotalTax)
 	}
 };
 
