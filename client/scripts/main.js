@@ -23,23 +23,24 @@ numeral.language('en-gb');
                 case "rentalIncome":
                     userInputHolders.rentalIncome = input * 12
                     calc.loanCalculations(); 
-                    calc.stampDutyCalculations();
+                    calc.taxCalculations();
                     selectAll('#tableRentalIncome').text(output);
                     break;
                 case "employment":
                     userInputHolders.employment = input;
                     selectAll('#tableTax').text(output);
-                    calc.loanCalculations(); 
+                    calc.taxCalculations();
                     break;
                 case "interestRate":
                     userInputHolders.interestRate = input / 100;
                     selectAll('#tableTax').text(output);
+                    calc.taxCalculations();
                     break;
                 case "propertyValue":
                     userInputHolders.propertyValue = input;
                     calc.loanCalculations(); 
                     calc.stampDutyCalculations();
-                    selectAll('#tableTax').text(output);
+                    calc.taxCalculations();
                     break;
                 case "calcLoan":
                     let leverage = input["LTVDifference"] || 0;
@@ -51,10 +52,18 @@ numeral.language('en-gb');
                     break;
                 case "stampDuty":
                     let difference = input["difference"] || 0;
-                    difference = numeral(difference).format('($0a)');
+                    difference = numeral(difference).format('($0.[0]a)');
                     let newStampDuty = input["new"] || 0;
-                    newStampDuty = numeral(newStampDuty).format('($0a)');
+                    newStampDuty = numeral(newStampDuty).format('($0.[0] a)');
                     select("#stampDutyNumber").text(difference);
+                    break;
+                case "taxCalculations":
+                    for (var i = 0; i < input[1].length; i++) {
+                        select("#income" + [i]).text(input[2]);
+                        select("#totalTax" + [i]).text((input[0][i]));
+                        select("#niat" + [i]).text(-(input[1][i]));
+                    };
+                   
                 };
                 select("#rentalIncomeResult").text(numeral(userInputHolders.rentalIncome/12).format('$0,0[.]00'));
                 select("#housePriceResult").text(numeral(userInputHolders.propertyValue).format('$0,0[.]00'));
@@ -66,7 +75,9 @@ numeral.language('en-gb');
 
 
 document.addEventListener('DOMContentLoaded', () => {
-
+    calc.stampDutyCalculations();
+    calc.taxCalculations();
+    calc.loanCalculations();
     // make hover effects work on touch devices
     oHoverable.init();
 

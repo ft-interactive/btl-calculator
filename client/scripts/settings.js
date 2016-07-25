@@ -1,9 +1,28 @@
 import {calcIncomeTax, calcPersonalAllowance } from './tax_calculations'
 
+let userInputHolders = {
+    propertyValue: 700000,
+    employment: 65000,
+    rentalIncome: 2150*12,
+    interestRate: 0.02,
+    stressTestIR: 0.055,
+    floorNew: 1.45,
+    floorOld: 1.25,
+    WTdeductions: 0,
+    otherTaxDeductions: 0
+};
 
+let stampDutySettings = {
+    oldLimits: [125000,250000,925000,1500000],
+    oldTaxBrackets: [0.02, 0.03, 0.05, 0.02],
+    newLimits: [0,125000,250000,925000,1500000],
+    newTaxBrackets: [0.03,0.02,0.03,0.05,0.02]
+};
+
+let interestReliefArray = [["2016", 1], ["2017", 0.75], ["2018",0.5], ["2019", 0.25], ["2020", 0]]
 
 let taxbands = {
-	//zero: [0,0], // Guess not needed?
+	//zero: [0,0], // not needed anymore?
 	basic: [0.2, 32000],
 	higher: [0.4, 150000],
 	top: [0.45, 99999999999],
@@ -22,24 +41,6 @@ let personalAllowance = {
   blindAllowance:	2290,
   ageRelatedTreshold:	27700,
   taperThreshold:	100000,
-};
-
-let userInputHolders = {
-    propertyValue: 0,
-    employment: 0,
-    rentalIncome: 0,
-    interestRate: 0,
-    stressTestIR: 0.055,
-    floorNew: 1.45,
-    floorOld: 1.25,
-};
-
-let stampDutySettings = {
-
-      oldLimits: [125000,250000,925000,1500000],
-      oldTaxBrackets: [0.02, 0.03, 0.05, 0.02],
-      newLimits: [0,125000,250000,925000,1500000],
-      newTaxBrackets: [0.03,0.02,0.03,0.05,0.02]
 };
 
 let languageSettings = {
@@ -69,4 +70,4 @@ let languageSettings = {
 
 
 
-export { taxbands, details, personalAllowance, userInputHolders, languageSettings, stampDutySettings }
+export { taxbands, details, personalAllowance, userInputHolders, languageSettings, stampDutySettings, interestReliefArray }

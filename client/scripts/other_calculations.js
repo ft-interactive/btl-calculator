@@ -1,7 +1,7 @@
 const numeral = require('numeral');
 import { router } from './main';
 import { calculateTaxes } from './tax_calculations';
-import { taxbands, details, personalAllowance, userInputHolders, stampDutySettings } from './settings'
+import { taxbands, details, personalAllowance, userInputHolders, stampDutySettings, interestReliefArray } from './settings'
 
 let depositNumber = 35; 
 let percentageNumber = 4;
@@ -62,27 +62,22 @@ let calc = {
 
 				function callback (element, index, array) {
 					let value = userInputHolders.propertyValue > element
-					value = value ? 1 : 0 
-					return value
-				}
-				let trueOrFalse = Array1.map(callback); // Returns array containing 0 or 1 x4
-
-				function callback2 (element, index, array) {
-					return userInputHolders.propertyValue - element
+					value = value ? 1 : 0  
+					let value2 = userInputHolders.propertyValue - element
+					let value3 = value * value2
+					return value3 
 				}
 
-				let taxableAmounts = Array1.map(callback2); 
-
+				let trueOrFalse = Array1.map(callback); 
 				
-
-				function callback3 (element, index, array) {
-					return taxableAmounts[index] * trueOrFalse[index] * element 
+				function callbackSecond (element, index, array) {
+					return trueOrFalse[index] * element 
 				}
 
-				let totalArray = Array2.map(callback3)
+				let totalArray = Array2.map(callbackSecond)
 				let sum = totalArray.reduce(function(a, b) { return a + b; }, 0);
 				
-				console.log(sum)
+				
 				return sum	
 
 			}
@@ -100,60 +95,20 @@ let calc = {
 
 		},
 
-		tax: function(object2) {
+		taxCalculations: function() {
 
-
-			
-
-			function stampDuty (Array1, Array2) {
-
-				// TODO: Tidy this
-
-				function callback (element, index, array) {
-					let value = objekti.propertyValue > element
-					value = value ? 1 : 0 
-					return value
-				}
-				let trueOrFalse = Array1.map(callback); // Returns array containing 0 or 1 x4
-
-				function callback2 (element, index, array) {
-					return objekti.propertyValue - element
-				}
-
-				let taxableAmounts = Array1.map(callback2); 
-
-				
-
-				function callback3 (element, index, array) {
-					return taxableAmounts[index] * trueOrFalse[index] * element 
-				}
-
-				let totalArray = Array2.map(callback3)
-				let sum = totalArray.reduce(function(a, b) { return a + b; }, 0);
-				
-				console.log(sum)
-				return sum
-			}
-
-		let employmentTaxes = calculateTaxes(objekti.employmentIncome)
-		let old_WTdeductions = objekti.rentalIncome * 0.1
-		let WTdeductions = 500;
-		let otherTaxDeductions = 500;
+		let employmentTaxes = calculateTaxes(userInputHolders.employment)
+		let old_WTdeductions = userInputHolders.rentalIncome * 0.1
+		let WTdeductions = userInputHolders.WTdeductions;
+		let otherTaxDeductions = userInputHolders.otherTaxDeductions;
 		let WTDifference = WTdeductions - old_WTdeductions; 
 
 
-		let profits = objekti.rentalIncome * 12,
-			profitBeforeTax = profits - WTdeductions,
-			interestRelief = {
-				"2016": 1,
-				"2017": 0.75,
-				"2018": 0.5, 
-				"2019": 0.25,
-				"2020": 0,
-			}
+		let interestPayments = userInputHolders.propertyValue * userInputHolders.interestRate,
+			profits = userInputHolders.rentalIncome - interestPayments;
 
-		let interestReliefArray = [["2016", 1], ["2017", 0.75], ["2018",0.5], ["2019", 0.25], ["2020", 0]];
-			
+
+
 			let i = -1;
 			let interestTaxable = [],
 				interestReliefPounds = [],
@@ -164,16 +119,18 @@ let calc = {
 				WTTotalTax = [],
 				WTProfitAfterTax = [];	
 
+			
+
 			interestReliefArray.map(function(value, key, object)
 			{
 				i+=1
-				interestTaxable.push(objekti.interestPayments - value[1] * objekti.interestPayments);
-				interestReliefPounds.push(objekti.interestPayments * value[1]); 
-				taxableAmountNewWT.push(objekti.rentalIncome - interestReliefPounds[i] - WTdeductions);
+				interestTaxable.push(interestPayments - value[1] * interestPayments);
+				interestReliefPounds.push(interestPayments * value[1]); 
+				taxableAmountNewWT.push(userInputHolders.rentalIncome - interestReliefPounds[i] - WTdeductions);
 				taxableAmountOldWT.push(taxableAmountNewWT[i] + WTDifference);
 			});
-			console.log(taxableAmountNewWT, taxableAmountOldWT)
-
+			
+			
 			let WTCalcs = function (input) {
 				let WTTax = [],
 					WTTaxDeductionInterestRelief = [],
@@ -185,7 +142,7 @@ let calc = {
 				input.map(function(value, key, object) 
 					{
 						i += 1
-						WTTax.push(calculateTaxes(objekti.employmentIncome + value) - employmentTaxes)		
+						WTTax.push(calculateTaxes(userInputHolders.employment + value) - employmentTaxes)		
 						let interestTaxableV = interestTaxable[Object.keys(interestTaxable)[i]] 		
 						let dummy = 0;
 								if ((interestTaxableV * 0.2) > WTTax[i]) {
@@ -195,16 +152,15 @@ let calc = {
 								};
 						WTTaxDeductionInterestRelief.push(dummy)
 						WTTotalTax.push(WTTax[i] - WTTaxDeductionInterestRelief[i])
-						WTProfitAfterTax.push(objekti.rentalIncome - objekti.interestPayments  - WTdeductions - otherTaxDeductions - WTTotalTax[i])	
+						WTProfitAfterTax.push(userInputHolders.rentalIncome - interestPayments  - WTdeductions - otherTaxDeductions - WTTotalTax[i])	
 						});
 
-				return [WTTotalTax, WTProfitAfterTax];	
-
+				return [WTTotalTax, WTProfitAfterTax, profits];	
 			}
 
-			let response = [["Old Wear & Tear Rules", WTCalcs(taxableAmountOldWT)], ["New Wear & Tear Rules", WTCalcs(taxableAmountNewWT)]]
-			console.log(objekti)
-			return response;
+			//let passObject = [["Old Wear & Tear Rules", WTCalcs(taxableAmountOldWT)], ["New Wear & Tear Rules", WTCalcs(taxableAmountNewWT)]]
+			let passObject = WTCalcs(taxableAmountNewWT)
+			router("taxCalculations", passObject)
 
 	}
 };
