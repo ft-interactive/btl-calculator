@@ -46,7 +46,8 @@ let sliderSettings = [{
         'min': 0,
         'max': 150000,
         'step': 1000,
-        'labelright': "+"
+        'labelright': "+",
+        'destination': '#controls'
     }, {
         'divID': 'slider2',
         'className': 'slideholderTop',
@@ -58,7 +59,22 @@ let sliderSettings = [{
         'min': 0,
         'max': 10,
         'step': 1, 
-        'labelright': "%" 
+        'labelright': "%",
+        'destination': '#controls'
+    },
+    {
+        'divID': 'slider3',
+        'className': 'slideholderTop',
+        'HTML': 'How much you spend on furnishings per year?',
+        'labName': 'WT',
+        'pos': 0,
+        'labelcss': 'slideLabelBig',
+        'sliderID': 'slider',
+        'min': 0,
+        'max': userInputHolders.oldWTDeductions,
+        'step': 10, 
+        'labelright': "+",
+        'destination': '#controls2'
     }];
 
 let textInputSettings = [{
@@ -108,22 +124,26 @@ slider.create = function() {
     function callback(element, index, array) {
         let i = index;
         // build slider
-        let slideHolder = select('#controls');
-        slideHolder
-            .append('div')
-            .attr('id', 'liuku')
-            .html(slider.sliderTemplate(sliderSettings[i]));
 
-        // Let's send the stuff to moveLabel() which creates the label
-        // and positions it
+       // let builder = function () {
 
-        slider.moveLabel(
-            sliderSettings[i].labName, // the name of the slider
-            Number(sliderSettings[i].pos), // the starting position of the slider
-            slider.calcLabelPos(Number(sliderSettings[i].pos), // the x coordinate for the starting position
-                sliderSettings[i].sliderID, 'firstTime') // the ID of the slider -- TODO: GET RID OF THIS
-        );
-    }
+            let slideHolder = select(sliderSettings[i].destination);
+            slideHolder
+                .insert("div",":first-child")
+                .attr('id', 'liuku')
+                .html(slider.sliderTemplate(sliderSettings[i]));
+
+            // Let's send the stuff to moveLabels() which creates the label
+            // and positions it
+
+            slider.moveLabel(
+                sliderSettings[i].labName, // the name of the slider
+                Number(sliderSettings[i].pos), // the starting position of the slider
+                slider.calcLabelPos(Number(sliderSettings[i].pos), // the x coordinate for the starting position
+                    sliderSettings[i].sliderID, 'firstTime') // the ID of the slider -- TODO: GET RID OF THIS
+            );
+        }
+  //  }
     
 };
 
@@ -210,7 +230,7 @@ textInput.create = function() {
         // build slider
         let inputHolder = select('#textInputHolder');
         inputHolder
-            .append('div')
+            .insert("div",":first-child")
             .attr('id', 'textInput')
             .html(textInput.textInputTemplate(textInputSettings[i]));
 
@@ -227,7 +247,7 @@ table.create = function() {
         let i = index;
         let tableHolder = select('#tableHolder');
         tableHolder
-            .append('div')
+            .insert("div",":first-child")
             .attr('id', 'resultsTable')
             .html(table.tableTemplate(tableArraySettings[i]));
     }

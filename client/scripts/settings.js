@@ -1,16 +1,22 @@
 import {calcIncomeTax, calcPersonalAllowance } from './tax_calculations'
 
 let userInputHolders = {
+  // These are the initial values when page is loaded, feel free to change
     propertyValue: 700000,
     employment: 0,
     rentalIncome: 2150*12,
-    interestRate: 0.02,
+    interestRate: 0,
+    WTdeductions: 0,
+    otherTaxDeductions: 0, // If you want that some tax deductions (other than Wear and tear and interest relief) are factored in the calculations - no user input for this!!!
+
+    // change these if you know what you are doing
     stressTestIR: 0.055,
     floorNew: 1.45,
     floorOld: 1.25,
-    WTdeductions: 0,
-    otherTaxDeductions: 0,
-    principal: 0 // Don't change!
+
+    // don't change!
+    oldWTDeductions: 2580,  
+    principal: 0 
 };
 
 let stampDutySettings = {

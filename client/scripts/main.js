@@ -22,9 +22,16 @@ numeral.language('en-gb');
             switch (source) {
                 case "rentalIncome":
                     userInputHolders.rentalIncome = input * 12
+                    userInputHolders.oldWTdeductions = Math.round(userInputHolders.rentalIncome * 0.1); 
                     calc.loanCalculations(); 
                     calc.taxCalculations();
-                    selectAll('#tableRentalIncome').text(output);
+                    let selection = selectAll('#slider')
+                    selection.each(function (d, i) {
+                    if (this.parentElement.children[4].id === "WT") {
+                          select(this).attr("max", userInputHolders.oldWTdeductions)
+                          select(this.parentElement.children[3]).text(userInputHolders.oldWTdeductions);
+                        };
+                    })
                     break;
                 case "employment":
                     userInputHolders.employment = input;
@@ -66,7 +73,18 @@ numeral.language('en-gb');
                         select("#totalTax" + [i]).text(totalTax);
                         select("#niat" + [i]).text(niat);
                     };
-                   
+                    break;
+                case "WT":       
+                    userInputHolders.WTdeductions = input;
+                    if (input === 0){
+                        userInputHolders.WTdeductions = 1}
+                    console.log(userInputHolders.WTdeductions)
+                    userInputHolders.oldWTdeductions = userInputHolders.rentalIncome * 0.1; 
+                    calc.taxCalculations("WT");  
+                    break;
+                case "WTOut":
+                    let wtdifference = numeral(input).format('($ 0)');
+                    select("#WTDifference").text(wtdifference);
                 };
                 select("#rentalIncomeResult").text(numeral(userInputHolders.rentalIncome/12).format('$0,0[.]00'));
                 select("#housePriceResult").text(numeral(userInputHolders.propertyValue).format('$0,0[.]00'));

@@ -101,7 +101,9 @@ let calc = {
 
 		},
 
-		taxCalculations: function() {
+		taxCalculations: function(WT) {
+
+
 
 		let employmentTaxes = calculateTaxes(userInputHolders.employment)
 		let WTdeductions = userInputHolders.WTdeductions;
@@ -109,8 +111,6 @@ let calc = {
 		let otherTaxDeductions = userInputHolders.otherTaxDeductions;
 		let WTDifference = WTdeductions - old_WTdeductions; 
 
-
-		console.log("OLDWT " + old_WTdeductions);
 
 		let interestPayments = userInputHolders.principal * userInputHolders.interestRate, //
 			profits = userInputHolders.rentalIncome - interestPayments;
@@ -135,8 +135,8 @@ let calc = {
 				taxableAmountNewWT.push(userInputHolders.rentalIncome - interestReliefPounds[i] - WTdeductions);
 				taxableAmountOldWT.push(taxableAmountNewWT[i] + WTDifference);
 			});
-			
-			
+
+
 			let WTCalcs = function (input) {
 				let WTTax = [],
 					WTTaxDeductionInterestRelief = [],
@@ -168,6 +168,22 @@ let calc = {
 				});
 				
 				return [WTTotalTaxChecked, WTProfitAfterTax, profits];	
+			}
+
+			if (WT != undefined) {
+			 	passObject = [WTCalcs(taxableAmountNewWT), WTCalcs(taxableAmountOldWT)];
+			 	//console.log(passObject[0][1]);
+			 	//console.log(passObject[1][1]);
+
+			 	var sum = passObject[0][1].map(function (num, idx) {
+  					return passObject[1][1][idx] - num;
+				});
+
+			 	router("WTOut", sum[0]);
+
+			 	//router("WT")
+
+			 	return  // skip the rest
 			}
 
 			//let passObject = [["Old Wear & Tear Rules", WTCalcs(taxableAmountOldWT)], ["New Wear & Tear Rules", WTCalcs(taxableAmountNewWT)]]
