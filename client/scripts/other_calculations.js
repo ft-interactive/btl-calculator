@@ -35,11 +35,17 @@ let calc = {
 				};
 
 				let principal = userInputHolders.propertyValue - depositChecked;
+				
+				userInputHolders.principal = principal
+
 				let maxLTV = principal / userInputHolders.propertyValue;
 				
 				let array = [depositChecked, principal, maxLTV]
 				return array
 			}
+
+
+
 			let newRulesArray = doCalcs(userInputHolders.floorNew);
 			let oldRulesArray = doCalcs(userInputHolders.floorOld);
 
@@ -98,16 +104,16 @@ let calc = {
 		taxCalculations: function() {
 
 		let employmentTaxes = calculateTaxes(userInputHolders.employment)
-		let old_WTdeductions = WTdeductions === 0 ? 0 : userInputHolders.rentalIncome * 0.1
 		let WTdeductions = userInputHolders.WTdeductions;
+		let old_WTdeductions = WTdeductions === 0 ? 0 : userInputHolders.rentalIncome * 0.1
 		let otherTaxDeductions = userInputHolders.otherTaxDeductions;
 		let WTDifference = WTdeductions - old_WTdeductions; 
 
 
-		let interestPayments = userInputHolders.propertyValue * userInputHolders.interestRate,
+		console.log("OLDWT " + old_WTdeductions);
+
+		let interestPayments = userInputHolders.principal * userInputHolders.interestRate, //
 			profits = userInputHolders.rentalIncome - interestPayments;
-
-
 
 			let i = -1;
 			let interestTaxable = [],

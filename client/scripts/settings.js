@@ -9,7 +9,8 @@ let userInputHolders = {
     floorNew: 1.45,
     floorOld: 1.25,
     WTdeductions: 0,
-    otherTaxDeductions: 0
+    otherTaxDeductions: 0,
+    principal: 0 // Don't change!
 };
 
 let stampDutySettings = {
