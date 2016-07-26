@@ -2,7 +2,7 @@ import {calcIncomeTax, calcPersonalAllowance } from './tax_calculations'
 
 let userInputHolders = {
     propertyValue: 700000,
-    employment: 65000,
+    employment: 0,
     rentalIncome: 2150*12,
     interestRate: 0.02,
     stressTestIR: 0.055,

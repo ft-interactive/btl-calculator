@@ -28,12 +28,12 @@ numeral.language('en-gb');
                     break;
                 case "employment":
                     userInputHolders.employment = input;
-                    selectAll('#tableTax').text(output);
+                    //selectAll('#tableTax').text(output);
                     calc.taxCalculations();
                     break;
                 case "interestRate":
                     userInputHolders.interestRate = input / 100;
-                    selectAll('#tableTax').text(output);
+                    //selectAll('#tableTax').text(output);
                     calc.taxCalculations();
                     break;
                 case "propertyValue":
@@ -59,9 +59,12 @@ numeral.language('en-gb');
                     break;
                 case "taxCalculations":
                     for (var i = 0; i < input[1].length; i++) {
-                        select("#income" + [i]).text(input[2]);
-                        select("#totalTax" + [i]).text((input[0][i]));
-                        select("#niat" + [i]).text(-(input[1][i]));
+                        let income = numeral(input[2]).format('$0,0');
+                        let totalTax = numeral(input[0][i]).format('$0,0');
+                        let niat = numeral(input[1][i]).format('$0,0');
+                        select("#income" + [i]).text(income);
+                        select("#totalTax" + [i]).text(totalTax);
+                        select("#niat" + [i]).text(niat);
                     };
                    
                 };

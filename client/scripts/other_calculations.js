@@ -98,7 +98,7 @@ let calc = {
 		taxCalculations: function() {
 
 		let employmentTaxes = calculateTaxes(userInputHolders.employment)
-		let old_WTdeductions = userInputHolders.rentalIncome * 0.1
+		let old_WTdeductions = WTdeductions === 0 ? 0 : userInputHolders.rentalIncome * 0.1
 		let WTdeductions = userInputHolders.WTdeductions;
 		let otherTaxDeductions = userInputHolders.otherTaxDeductions;
 		let WTDifference = WTdeductions - old_WTdeductions; 
@@ -155,7 +155,13 @@ let calc = {
 						WTProfitAfterTax.push(userInputHolders.rentalIncome - interestPayments  - WTdeductions - otherTaxDeductions - WTTotalTax[i])	
 						});
 
-				return [WTTotalTax, WTProfitAfterTax, profits];	
+				let WTTotalTaxChecked = WTTotalTax.map(function(value) {
+					value = value < 0 ? 0 : value;
+					value = -(value)
+					return value
+				});
+				
+				return [WTTotalTaxChecked, WTProfitAfterTax, profits];	
 			}
 
 			//let passObject = [["Old Wear & Tear Rules", WTCalcs(taxableAmountOldWT)], ["New Wear & Tear Rules", WTCalcs(taxableAmountNewWT)]]
