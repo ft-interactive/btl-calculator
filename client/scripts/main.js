@@ -111,6 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
     textInput.create();
     //table.create();
 
+    slider.initialize();
+
    let resize =  function resize() {
         let newX = slider.calcLabelPos(initPos, 'slider');
         slider.moveLabel('savelab', initPos, newX);

@@ -3,9 +3,9 @@ import {calcIncomeTax, calcPersonalAllowance } from './tax_calculations'
 let userInputHolders = {
   // These are the initial values when page is loaded, feel free to change
     propertyValue: 700000,
-    employment: 0,
+    employment: 65000,
     rentalIncome: 2150*12,
-    interestRate: 0,
+    interestRate: 0.01,
     WTdeductions: 0,
     otherTaxDeductions: 0, // If you want that some tax deductions (other than Wear and tear and interest relief) are factored in the calculations - no user input for this!!!
 

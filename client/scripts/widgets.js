@@ -160,9 +160,22 @@ slider.moveLabel = function(divId, labelText, pos) {
 };
 
 
+slider.initialize = function() {
+     sliderSettings.forEach(callback);
+     
+        function callback(element, index, array) {
+            let labName = sliderSettings[index].labName
+            let pos = Number(sliderSettings[index].pos)
+            console.log("täällä index" + index)
+            if (index === 0) { index = 1} else if (index === 1) { index = 0 }
+             let newX = slider.calcLabelPos(pos, 'slider', 'else', index);
+            slider.moveLabel(labName, pos, newX);
+        }
+}
+
 slider.calcLabelPos = function(pos, SliderID, state, number) {
 
-    let slider = selectAll('#' + String(SliderID));
+    let slider = selectAll('#slider');
     let array = 0;
 
      if (state == 'firstTime') {
@@ -187,9 +200,12 @@ slider.calcLabelPos = function(pos, SliderID, state, number) {
         let slider2_filtered = slider.filter(function(d, i) {
             return i === number;
         });
+
         slider = slider2_filtered._groups[0][0];
             let increment = slider.max/slider.step + 1; 
+            console.log("täällä ollaan ja slider nro " + number + "incerement" + increment)
             let posX = slider.getBoundingClientRect().width;
+            console.log(pos, slider.step, posX, increment)
             let point = (pos/slider.step) * (posX/increment);
             let gradualOffset = 0; 
             let staticOffset = 0;
@@ -213,7 +229,7 @@ textInput.textInputTemplate = function(object) {
     <div class="textInput">
       <div class="o-forms-group">
         <div class="question">${object.info}</div>
-        <input maxlength="7" type="text" value=${object.initialValue} id=${object.id} placeholder="placeholder" class="o-forms-text"></input>
+        <input maxlength="7" type="text" value=${numeral(object.initialValue).format('0,0')} id=${object.id} placeholder="placeholder" class="o-forms-text"></input>
       </div>
     </div>
     </div>
