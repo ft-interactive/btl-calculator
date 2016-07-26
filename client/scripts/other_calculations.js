@@ -11,16 +11,6 @@ let percentageNumber = 4;
 // This function is "array.map" but works with object
 // vanilla alternative for lodash#mapValues
 
-Object.defineProperty(Object.prototype, 'map', {
-    value: function(f, ctx) {
-        ctx = ctx || this;
-        var self = this, result = {};
-        Object.keys(self).forEach(function(k) {
-            result[k] = f.call(ctx, self[k], k, self); 
-        });
-        return result;
-    }
-});
 
 let calc = {
 		loanCalculations: function () {
@@ -34,9 +24,12 @@ let calc = {
 					depositChecked = depositNotChecked;
 				};
 
+
 				let principal = userInputHolders.propertyValue - depositChecked;
 				
-				userInputHolders.principal = principal
+				if (floor=userInputHolders.floorNew) {
+					userInputHolders.principal = principal
+				}
 
 				let maxLTV = principal / userInputHolders.propertyValue;
 				
@@ -45,9 +38,8 @@ let calc = {
 			}
 
 
-
-			let newRulesArray = doCalcs(userInputHolders.floorNew);
 			let oldRulesArray = doCalcs(userInputHolders.floorOld);
+			let newRulesArray = doCalcs(userInputHolders.floorNew);
 
 			let passObject = {
 				"depositDifference": newRulesArray[0] - oldRulesArray[0],
@@ -125,16 +117,18 @@ let calc = {
 				WTTotalTax = [],
 				WTProfitAfterTax = [];	
 
-			
+			console.log("IIPEE" + interestPayments);
 
 			interestReliefArray.map(function(value, key, object)
 			{
 				i+=1
-				interestTaxable.push(interestPayments - value[1] * interestPayments);
-				interestReliefPounds.push(interestPayments * value[1]); 
+				interestTaxable.push(interestPayments - value * interestPayments);
+				interestReliefPounds.push(interestPayments * value); 
 				taxableAmountNewWT.push(userInputHolders.rentalIncome - interestReliefPounds[i] - WTdeductions);
 				taxableAmountOldWT.push(taxableAmountNewWT[i] + WTDifference);
 			});
+
+			
 
 
 			let WTCalcs = function (input) {

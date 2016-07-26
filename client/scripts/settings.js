@@ -26,7 +26,10 @@ let stampDutySettings = {
     newTaxBrackets: [0.03,0.02,0.03,0.05,0.02]
 };
 
-let interestReliefArray = [["2016", 1], ["2017", 0.75], ["2018",0.5], ["2019", 0.25], ["2020", 0]]
+let interestReliefArray = [1, 0.75, 0.5, 0.25, 0];
+
+
+//[["2016", 1], ["2017", 0.75], ["2018",0.5], ["2019", 0.25], ["2020", 0]]
 
 let taxbands = {
 	//zero: [0,0], // not needed anymore?
