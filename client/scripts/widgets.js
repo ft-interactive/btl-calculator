@@ -65,7 +65,7 @@ let sliderSettings = [{
     {
         'divID': 'slider3',
         'className': 'slideholderTop',
-        'HTML': 'How much you spend on furnishings per year?',
+        'HTML': 'Amount spent on furnishings',
         'labName': 'WT',
         'pos': 0,
         'labelcss': 'slideLabelBig',
