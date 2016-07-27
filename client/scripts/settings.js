@@ -15,8 +15,8 @@ let userInputHolders = {
     floorOld: 1.25,
 
     // don't change!
-    oldWTDeductions: 2580,  
-    principal: 0 
+    principal: 0,
+    oldWTDeductions: 2580
 };
 
 let stampDutySettings = {

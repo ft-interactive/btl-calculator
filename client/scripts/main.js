@@ -15,7 +15,7 @@ numeral.language('en-gb', languageSettings);
 numeral.language('en-gb');
 
 
-   
+  
 
  let router =  function (source, input) {
 
@@ -28,8 +28,9 @@ numeral.language('en-gb');
                     let selection = selectAll('#slider')
                     selection.each(function (d, i) {
                     if (this.parentElement.children[4].id === "WT") {
-                          select(this).attr("max", userInputHolders.oldWTdeductions)
-                          select(this.parentElement.children[3]).text(userInputHolders.oldWTdeductions);
+                          let newmax = (userInputHolders.rentalIncome - (userInputHolders.principal * userInputHolders.interestRate)) * 0.1
+                          select(this).attr("max", (newmax))
+                          select(this.parentElement.children[3]).text(numeral(newmax).format('($0)'));
                         };
                     })
                     break;
@@ -63,8 +64,8 @@ numeral.language('en-gb');
                     depositNeeded = numeral(depositNeeded).format('$0,0');
                     
                     let principal= input["principal"] || 0;
+                    userInputHolders.principal = principal
                     principal= numeral(principal).format('($0,0)');
-                    console.log("prinicpal"+principal+" deposit "+ depositNeeded)
                     select("#percentageNumber").text(leverage);
                     select("#LTV").text(LTV);
                     select("#depositNumber").text(deposit);
@@ -100,11 +101,11 @@ numeral.language('en-gb');
                     userInputHolders.WTdeductions = input;
                     if (input === 0){
                         userInputHolders.WTdeductions = 1}
-                    console.log(userInputHolders.WTdeductions)
                     userInputHolders.oldWTdeductions = userInputHolders.rentalIncome * 0.1; 
                     calc.taxCalculations("WT");  
                     break;
                 case "WTOut":
+                    if (input<0) {input = 0};
                     let wtdifference = numeral(input).format('($ 0)');
                     select("#WTDifference").text(wtdifference);
                 };
@@ -112,7 +113,9 @@ numeral.language('en-gb');
                 select("#housePriceResult").text(numeral(userInputHolders.propertyValue).format('$0,0[.]00'));
                 select("#mortgageRateResult").text(numeral(userInputHolders.interestRate).format('0%'));
                 select("#salaryResult").text(numeral(userInputHolders.employment).format('$0,0[.]00'));
-                
+                if (userInputHolders.employment >= 150000) { 
+                     select("#salaryResult").text(numeral(userInputHolders.employment).format('$0,0[.]00') + " or more");
+                }
 
     }
 
@@ -134,6 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
     //table.create();
 
     slider.initialize();
+
+
 
    let resize =  function resize() {
         let newX = slider.calcLabelPos(initPos, 'slider');

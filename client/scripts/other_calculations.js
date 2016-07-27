@@ -37,8 +37,6 @@ let calc = {
 				return array
 			}
 
-
-
 			let oldRulesArray = doCalcs(userInputHolders.floorOld);
 			let newRulesArray = doCalcs(userInputHolders.floorNew);
 			let interestPayments = userInputHolders.principal * userInputHolders.interestRate
@@ -99,16 +97,16 @@ let calc = {
 		taxCalculations: function(WT) {
 
 
-
-		let employmentTaxes = calculateTaxes(userInputHolders.employment)
-		let WTdeductions = userInputHolders.WTdeductions;
-		let old_WTdeductions = WTdeductions === 0 ? 0 : userInputHolders.rentalIncome * 0.1
-		let otherTaxDeductions = userInputHolders.otherTaxDeductions;
-		let WTDifference = WTdeductions - old_WTdeductions; 
-
-
 		let interestPayments = userInputHolders.principal * userInputHolders.interestRate, //
 			profits = userInputHolders.rentalIncome - interestPayments;
+
+			console.log(userInputHolders.principal * userInputHolders.interestRate)
+			
+		let employmentTaxes = calculateTaxes(userInputHolders.employment)
+		let WTdeductions = userInputHolders.WTdeductions;
+		let old_WTdeductions = WTdeductions === 0 ? 0 : (userInputHolders.rentalIncome - interestPayments) * 0.1
+		let otherTaxDeductions = userInputHolders.otherTaxDeductions;
+		let WTDifference = WTdeductions - old_WTdeductions; 
 
 			let i = -1;
 			let interestTaxable = [],
