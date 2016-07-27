@@ -80,9 +80,11 @@ numeral.language('en-gb');
                     break;
                  case "interestPayments":
                     let IP = numeral(input).format('($0,0)');
+                    let propertyWorth = numeral(userInputHolders.propertyValue).format('($0,0)');
                     let principal2 = numeral(userInputHolders.principal).format('($0,0)');
                     select("#principal2").text(principal2);
                     select("#interestPayments").text(IP);
+                    select("#housePriceResult2").text(propertyWorth);
                     break;
                 case "taxCalculations":
                     for (var i = 0; i < input[1].length; i++) {
