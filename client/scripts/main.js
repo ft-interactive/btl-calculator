@@ -52,10 +52,24 @@ numeral.language('en-gb');
                 case "calcLoan":
                     let leverage = input["LTVDifference"] || 0;
                     leverage = numeral(leverage).format('0%');
+
+                    let LTV = input["LTV"] || 0;
+                    LTV = numeral(LTV).format('0%');
+                    
                     let deposit = input["depositDifference"] || 0;
                     deposit = numeral(deposit).format('($0a)');
+                    
+                    let depositNeeded = input["deposit"] || 0;
+                    depositNeeded = numeral(depositNeeded).format('$0,0');
+                    
+                    let principal= input["principal"] || 0;
+                    principal= numeral(principal).format('($0,0)');
+                    console.log("prinicpal"+principal+" deposit "+ depositNeeded)
                     select("#percentageNumber").text(leverage);
+                    select("#LTV").text(LTV);
                     select("#depositNumber").text(deposit);
+                    select("#depositNeeded").text(depositNeeded);
+                    select("#principal").text(principal);
                     break;
                 case "stampDuty":
                     let difference = input["difference"] || 0;
@@ -63,6 +77,12 @@ numeral.language('en-gb');
                     let newStampDuty = input["new"] || 0;
                     newStampDuty = numeral(newStampDuty).format('($0.[0] a)');
                     select("#stampDutyNumber").text(difference);
+                    break;
+                 case "interestPayments":
+                    let IP = numeral(input).format('($0,0)');
+                    let principal2 = numeral(userInputHolders.principal).format('($0,0)');
+                    select("#principal2").text(principal2);
+                    select("#interestPayments").text(IP);
                     break;
                 case "taxCalculations":
                     for (var i = 0; i < input[1].length; i++) {

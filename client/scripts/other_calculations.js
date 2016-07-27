@@ -38,16 +38,20 @@ let calc = {
 			}
 
 
+
 			let oldRulesArray = doCalcs(userInputHolders.floorOld);
 			let newRulesArray = doCalcs(userInputHolders.floorNew);
+			let interestPayments = userInputHolders.principal * userInputHolders.interestRate
+			router("interestPayments", interestPayments)
 
 			let passObject = {
 				"depositDifference": newRulesArray[0] - oldRulesArray[0],
 				"LTVDifference": oldRulesArray[2] - newRulesArray[2],
 				"LTV": newRulesArray[2],
-				"Principal": newRulesArray[1],
-				"Deposit": newRulesArray[1]
+				"principal": newRulesArray[1],
+				"deposit": newRulesArray[0]
 			}
+
 			router("calcLoan", passObject);	
 				
 		},
@@ -82,7 +86,6 @@ let calc = {
 
 			let newRulesSum = doCalcs(stampDutySettings.newLimits, stampDutySettings.newTaxBrackets);
 			let oldRulesSum = doCalcs(stampDutySettings.oldLimits, stampDutySettings.oldTaxBrackets);
-
 			let passObject = {
 				"difference": newRulesSum - oldRulesSum,
 				"new": newRulesSum
@@ -168,6 +171,8 @@ let calc = {
 			 	passObject = [WTCalcs(taxableAmountNewWT), WTCalcs(taxableAmountOldWT)];
 			 	//console.log(passObject[0][1]);
 			 	//console.log(passObject[1][1]);
+
+
 
 			 	var sum = passObject[0][1].map(function (num, idx) {
   					return passObject[1][1][idx] - num;

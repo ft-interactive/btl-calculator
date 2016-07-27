@@ -104,7 +104,7 @@ let table = Object.create(Widget);
 
 slider.sliderTemplate = function(annotations) {
     return `
-  <div data-o-grid-colspan="12 S6">
+  <div data-o-grid-colspan="12 S6" style="padding-top: 13px">
     <div class="question">${annotations.HTML}</div>
     <input class='slider' id=${annotations.sliderID} type='range' value=${annotations.pos} max=${annotations.max} min=${annotations.min} step=${annotations.step}>
     <div class='rangeleft'>${annotations.min}</div>
