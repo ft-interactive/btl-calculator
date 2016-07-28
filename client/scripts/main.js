@@ -49,8 +49,14 @@ numeral.language('en-gb');
                           let newmax = (userInputHolders.rentalIncome - (userInputHolders.principal * userInputHolders.interestRate)) * 0.1
                           select(this).attr("max", (newmax))
                           select(this.parentElement.children[3]).text(numeral(newmax).format('($0)'));
+                          let lab = this.parentElement.children[4].id,
+                          pos = Number(this.value),
+                          newX = slider.calcLabelPos(pos, 'slider', 'else', i);
+                          slider.moveLabel(lab, pos, newX);
+                          router(lab, pos);
                         };
                     })
+                    
                     break;
                 case "propertyValue":
                     userInputHolders.propertyValue = input;
@@ -161,15 +167,24 @@ document.addEventListener('DOMContentLoaded', () => {
     attachFastClick(document.body);
 
     window.addEventListener('resize', resize);
-radioButtons.create();
+
+    radioButtons.create();
     slider.create();
     slider.initialize();
     textInput.create();
     
     router("radioInput", "newFloor")
-    let resize =  function resize() {
-        let newX = slider.calcLabelPos(initPos, 'slider');
-        slider.moveLabel('savelab', initPos, newX);
+    
+    function resize() {
+         selectAll ('#slider').each(function (d, i) {
+         console.log("triggered")
+         let lab = this.parentElement.children[4].id;
+         let pos = Number(this.value);
+         let newX = slider.calcLabelPos(pos, 'slider', 'else', i);
+         slider.moveLabel(lab, pos, newX);
+        });
+    
+       
     }
 
 });
