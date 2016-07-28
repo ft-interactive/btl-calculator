@@ -4,7 +4,7 @@ import { transition } from 'd3-transition';
 import d3 from 'd3';
 import { calculateTaxes } from './tax_calculations';
 import { calc } from './other_calculations';
-import { userInputHolders } from './settings';
+import { userInputHolders, sliderSettings } from './settings';
 const numeral = require('numeral');
 
 
@@ -35,7 +35,6 @@ let Widget = {
 
             selectAll('input[type=radio]').on('change', function(d, i){
                 select(this).attr('class', 'o-forms-radio o-forms-radio--highlight')
-
                 if (this.id === "newFloor") { userInputHolders.floor = "new "} 
                  else if (this.id === "oldFloor") {
                     userInputHolders.floor = "old"
@@ -50,47 +49,7 @@ let Widget = {
     };
 
 
-let sliderSettings = [{
-        'divID': 'slider1',
-        'className': 'slideholderTop',
-        'HTML': 'Employment income',
-        'labName': 'employment',
-        'labelcss': 'slideLabelBig',
-        'pos': userInputHolders.employment,
-        'sliderID': 'slider',
-        'min': 0,
-        'max': 150000,
-        'step': 1000,
-        'labelright': "+",
-        'destination': '#controls'
-    }, {
-        'divID': 'slider2',
-        'className': 'slideholderTop',
-        'HTML': 'Interest rate',
-        'labName': 'interestRate',
-        'pos': userInputHolders.interestRate*100,
-        'labelcss': 'slideLabelSmall',
-        'sliderID': 'slider',
-        'min': 0,
-        'max': 7,
-        'step': 1, 
-        'labelright': "%",
-        'destination': '#controls'
-    },
-    {
-        'divID': 'slider3',
-        'className': 'slideholderTop',
-        'HTML': 'Amount spent on furnishings',
-        'labName': 'WT',
-        'pos': 0,
-        'labelcss': 'slideLabelBig',
-        'sliderID': 'slider',
-        'min': 0,
-        'max': (userInputHolders.rentalIncome - (userInputHolders.principal * userInputHolders.interestRate)) * 0.1,
-        'step': 10, 
-        'labelright': "+",
-        'destination': '#controls2'
-    }];
+
 
 let textInputSettings = [{
         'info': 'Rental income',
@@ -111,6 +70,12 @@ let tableArraySettings = [{
         'fd': 12322
     }];
 
+let radioInputSettings = [{
+        "firstOption": "125 per cent interest coverage ratio (ICR)",
+        "secondOption": "145 per cent ICR",
+        "IRCTitle": "Calculations based on:"
+}];
+
 let htmlString = '',
         label = 0,
         osoite = 0;
@@ -118,6 +83,7 @@ let htmlString = '',
 let slider = Object.create(Widget);
 let textInput = Object.create(Widget);
 let table = Object.create(Widget);
+let radioButtons = Object.create(Widget);
 
 slider.sliderTemplate = function(annotations) {
     return `
@@ -251,6 +217,33 @@ textInput.textInputTemplate = function(object) {
   `;
 };
 
+radioButtons.radioInputTemplate = function(object) {
+    return `
+    <div data-o-grid-colspan="12 S6">
+    <div class="o-forms-group">
+    <label class="o-forms-label"><span id=${object.ICRTitle}></span></label>
+        <input type="radio" id="oldFloor" name="radio" value="1" class="o-forms-radio"></input>
+        <label for="oldFloor" class="o-forms-label">${object.firstOption}</label>
+        <input type="radio" name="radio" id="newFloor" value="3" class="o-forms-radio o-forms-radio--highlight" checked></input>
+        <label for="newFloor" class="o-forms-label">${object.secondOption}</label>
+    </div>
+    </div>
+     `;
+};
+
+radioButtons.create = function(object) {
+    radioInputSettings.forEach(callback);
+
+    function callback(element, index, array) {
+        let i = index;
+        let radioInputHolder = select('#radioInputHolder');
+        radioInputHolder
+            .append("div")
+            .attr('id', 'radioInputDiv')
+            .html(radioButtons.radioInputTemplate(radioInputSettings[i]));
+    }
+};
+
 textInput.create = function() {
     //  let thisbind = this.moveLabel.bind(callback);
     //  let thisbind2 = this.sliderTemplate.bind(callback);
@@ -284,4 +277,4 @@ table.create = function() {
     }
 };
 
-export { Widget, slider, textInput, table }
+export { Widget, slider, textInput, table, radioButtons }

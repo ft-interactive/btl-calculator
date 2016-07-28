@@ -5,7 +5,7 @@ import d3 from 'd3';
 import { calculateTaxes } from './tax_calculations';
 import { calc } from './other_calculations';
 import { userInputHolders, languageSettings, texts} from './settings';
-import { Widget, slider, textInput, table } from './widgets';
+import { Widget, slider, textInput, table, radioButtons } from './widgets';
 const numeral = require('numeral');
 
 
@@ -135,6 +135,7 @@ numeral.language('en-gb');
                 };
 
                 select("#principalTitle").text(texts.principalTitle);
+                select("#ICRTitle").text(texts.ICRTitle);
                 select("#LTVTitle").text(texts.LTVTitle);
                 select("#stampDutyTitle").text(texts.stampDutyTitle);
                 select("#rentalIncomeResult").text(numeral(userInputHolders.rentalIncome/12).format('$0,0[.]00'));
@@ -160,17 +161,13 @@ document.addEventListener('DOMContentLoaded', () => {
     attachFastClick(document.body);
 
     window.addEventListener('resize', resize);
-
+radioButtons.create();
     slider.create();
-    
-    //table.create();
-
     slider.initialize();
     textInput.create();
+    
     router("radioInput", "newFloor")
-
-
-   let resize =  function resize() {
+    let resize =  function resize() {
         let newX = slider.calcLabelPos(initPos, 'slider');
         slider.moveLabel('savelab', initPos, newX);
     }

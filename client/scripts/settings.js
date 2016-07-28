@@ -1,7 +1,10 @@
 import {calcIncomeTax, calcPersonalAllowance } from './tax_calculations'
 
+
+/////// THE INITIAL VALUES
+
 let userInputHolders = {
-  // These are the initial values when page is loaded, feel free to change
+  // feel free to change
     propertyValue: 700000,
     employment: 65000,
     rentalIncome: 2150*12,
@@ -20,7 +23,11 @@ let userInputHolders = {
     oldWTDeductions: 2580
 };
 
+////// THE TEXTS IN THE PAGE
+
+
 let texts = {
+  IRCTitle: "Calculations based on xxxx:",
   principalTitle: "...get a loan worth...",
   LTVTitle: "... with a leverage of...",
   stampDutyTitle: "...and pay a stamp duty of",
@@ -30,6 +37,79 @@ let texts = {
   newLTVCaption: "The loan-to-value (LTV) leverage. It is assumed rent needs to cover 145 per cent of the interest payments at 5.5 per cent interest rate. "
 }
 
+
+////// THE WIDGETS
+
+let sliderSettings = [{
+        'divID': 'slider1',
+        'className': 'slideholderTop',
+        'HTML': 'Employment income',
+        'labName': 'employment',
+        'labelcss': 'slideLabelBig',
+        'pos': userInputHolders.employment,
+        'sliderID': 'slider',
+        'min': 0,
+        'max': 150000,
+        'step': 1000,
+        'labelright': "+",
+        'destination': '#controls'
+    }, {
+        'divID': 'slider2',
+        'className': 'slideholderTop',
+        'HTML': 'Interest rate',
+        'labName': 'interestRate',
+        'pos': userInputHolders.interestRate*100,
+        'labelcss': 'slideLabelSmall',
+        'sliderID': 'slider',
+        'min': 0,
+        'max': 7,
+        'step': 1, 
+        'labelright': "%",
+        'destination': '#controls'
+    },
+    {
+        'divID': 'slider3',
+        'className': 'slideholderTop',
+        'HTML': 'Amount spent on furnishings',
+        'labName': 'WT',
+        'pos': 0,
+        'labelcss': 'slideLabelBig',
+        'sliderID': 'slider',
+        'min': 0,
+        'max': (userInputHolders.rentalIncome - (userInputHolders.principal * userInputHolders.interestRate)) * 0.1,
+        'step': 10, 
+        'labelright': "+",
+        'destination': '#controls2'
+    }];
+
+let textInputSettings = [{
+        'info': 'Rental income',
+        'info_add': '£ per month ',
+        'id': 'rentalIncome',
+        'initialValue': userInputHolders.rentalIncome/12
+    }, {
+        'info': 'Property value',
+        'info_add': '£',
+        'id': 'propertyValue',
+        'initialValue': userInputHolders.propertyValue
+    }];
+
+let tableArraySettings = [{
+      // initial values
+        'rentalIncome': 100,
+        'employment': 1000,
+        'fd': 12322
+    }];
+
+let radioInputSettings = [{
+        "firstOption": "125 per cent interest coverage ratio (ICR)",
+        "secondOption": "145 per cent ICR",
+        "IRCTitle": "Calculations based on:"
+}];
+
+
+////// THE CALCULATIONS SETTINGS
+
 let stampDutySettings = {
     oldLimits: [125000,250000,925000,1500000],
     oldTaxBrackets: [0.02, 0.03, 0.05, 0.02],
@@ -38,9 +118,6 @@ let stampDutySettings = {
 };
 
 let interestReliefArray = [1, 0.75, 0.5, 0.25, 0];
-
-
-//[["2016", 1], ["2017", 0.75], ["2018",0.5], ["2019", 0.25], ["2020", 0]]
 
 let taxbands = {
 	//zero: [0,0], // not needed anymore?
@@ -63,6 +140,9 @@ let personalAllowance = {
   ageRelatedTreshold:	27700,
   taperThreshold:	100000,
 };
+
+/////// LANGUAGE SETTINGS 
+
 
 let languageSettings = {
    delimiters: {
@@ -91,4 +171,4 @@ let languageSettings = {
 
 
 
-export { taxbands, details, personalAllowance, userInputHolders, texts, languageSettings, stampDutySettings, interestReliefArray }
+export { taxbands, details, sliderSettings, personalAllowance, userInputHolders, texts, languageSettings, stampDutySettings, interestReliefArray, textInputSettings, radioInputSettings, tableArraySettings }
