@@ -21,7 +21,7 @@ let userInputHolders = {
 };
 
 let texts = {
-  principalTitle: "...get a loan worth of...",
+  principalTitle: "...get a loan worth...",
   LTVTitle: "... with a leverage of...",
   stampDutyTitle: "...and pay a stamp duty of",
   oldPrincipalCaption: "The amount that could be borrowed. It is assumed rent needs to cover 125 per cent of the interest payments at 5.5 per cent interest rate." , 
