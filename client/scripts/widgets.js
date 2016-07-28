@@ -30,6 +30,21 @@ let Widget = {
                 slider.moveLabel(lab, pos, newX);
                 router(lab, pos);
                 }); 
+
+            // EL for radio buttons
+
+            selectAll('input[type=radio]').on('change', function(d, i){
+                select(this).attr('class', 'o-forms-radio o-forms-radio--highlight')
+
+                if (this.id === "newFloor") { userInputHolders.floor = "new "} 
+                 else if (this.id === "oldFloor") {
+                    userInputHolders.floor = "old"
+                } else {
+                    console.log("error occured, no floor defined");
+                    return 
+                }
+                router("radioInput", this.id)
+            });
             }
 
     };
@@ -57,7 +72,7 @@ let sliderSettings = [{
         'labelcss': 'slideLabelSmall',
         'sliderID': 'slider',
         'min': 0,
-        'max': 10,
+        'max': 7,
         'step': 1, 
         'labelright': "%",
         'destination': '#controls'
@@ -78,11 +93,13 @@ let sliderSettings = [{
     }];
 
 let textInputSettings = [{
-        'info': 'Rental income per month',
+        'info': 'Rental income',
+        'info_add': '£ per month ',
         'id': 'rentalIncome',
         'initialValue': userInputHolders.rentalIncome/12
     }, {
         'info': 'Property value',
+        'info_add': '£',
         'id': 'propertyValue',
         'initialValue': userInputHolders.propertyValue
     }];
@@ -105,7 +122,7 @@ let table = Object.create(Widget);
 slider.sliderTemplate = function(annotations) {
     return `
   <div data-o-grid-colspan="12 S6" style="padding-top: 13px">
-    <div class="question">${annotations.HTML}</div>
+    <div class="question_slider">${annotations.HTML}</div>
     <input class='slider' id=${annotations.sliderID} type='range' value=${annotations.pos} max=${annotations.max} min=${annotations.min} step=${annotations.step}>
     <div class='rangeleft'>${annotations.min}</div>
     <div class='rangeright'>${numeral(annotations.max).format('0,0')} ${annotations.labelright}</div>
@@ -188,7 +205,7 @@ slider.calcLabelPos = function(pos, SliderID, state, number) {
             staticOffset = 15
             gradualOffset = (slider.value/slider.max * 32);} 
             else { 
-            staticOffset = -1.5
+            staticOffset = -2
             gradualOffset = 0
             }
             array = point - staticOffset - gradualOffset;
@@ -210,8 +227,8 @@ slider.calcLabelPos = function(pos, SliderID, state, number) {
             staticOffset = 15
             gradualOffset = (slider.value/slider.max * 32);} 
             else { 
-            staticOffset = -1.5
-            gradualOffset = 0
+            staticOffset = -1
+            gradualOffset = -(slider.value/slider.max * 5 )
             }
             array = point - staticOffset - gradualOffset;
         };
@@ -222,10 +239,11 @@ slider.calcLabelPos = function(pos, SliderID, state, number) {
 textInput.textInputTemplate = function(object) {
 
     return `
-    <div data-o-grid-colspan="12 S6">
+    <div data-o-grid-colspan="12 S3">
     <div class="textInput">
       <div class="o-forms-group">
-        <div class="question">${object.info}</div>
+        <div class="question_textinput">${object.info}</div>
+        <div class="question_add">${object.info_add}</div>
         <input maxlength="8" type="text" value=${numeral(object.initialValue).format('0,0')} id=${object.id} placeholder="placeholder" class="o-forms-text"></input>
       </div>
     </div>

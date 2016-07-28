@@ -4,7 +4,7 @@ import { select, selectAll } from 'd3-selection';
 import d3 from 'd3';
 import { calculateTaxes } from './tax_calculations';
 import { calc } from './other_calculations';
-import { userInputHolders, languageSettings } from './settings';
+import { userInputHolders, languageSettings, texts} from './settings';
 import { Widget, slider, textInput, table } from './widgets';
 const numeral = require('numeral');
 
@@ -23,7 +23,7 @@ numeral.language('en-gb');
                 case "rentalIncome":
                     userInputHolders.rentalIncome = input * 12
                     userInputHolders.oldWTdeductions = Math.round(userInputHolders.rentalIncome * 0.1); 
-                    calc.loanCalculations(); 
+                    calc.loanCalculations(userInputHolders.floor); 
                     calc.taxCalculations();
                     let selection = selectAll('#slider')
                     selection.each(function (d, i) {
@@ -43,10 +43,18 @@ numeral.language('en-gb');
                     userInputHolders.interestRate = input / 100;
                     //selectAll('#tableTax').text(output);
                     calc.taxCalculations();
+                    selection = selectAll('#slider')
+                    selection.each(function (d, i) {
+                    if (this.parentElement.children[4].id === "WT") {
+                          let newmax = (userInputHolders.rentalIncome - (userInputHolders.principal * userInputHolders.interestRate)) * 0.1
+                          select(this).attr("max", (newmax))
+                          select(this.parentElement.children[3]).text(numeral(newmax).format('($0)'));
+                        };
+                    })
                     break;
                 case "propertyValue":
                     userInputHolders.propertyValue = input;
-                    calc.loanCalculations(); 
+                    calc.loanCalculations(userInputHolders.floor); 
                     calc.stampDutyCalculations();
                     calc.taxCalculations();
                     break;
@@ -65,24 +73,23 @@ numeral.language('en-gb');
                     
                     let principal= input["principal"] || 0;
                     userInputHolders.principal = principal
-                    principal= numeral(principal).format('($0,0)');
                     select("#percentageNumber").text(leverage);
-                    select("#LTV").text(LTV);
+                    select("#LTVNumber").text(LTV);
                     select("#depositNumber").text(deposit);
                     select("#depositNeeded").text(depositNeeded);
-                    select("#principal").text(principal);
+                    select("#principalNumber").text(numeral(principal).format('($0a)'));
                     break;
                 case "stampDuty":
                     let difference = input["difference"] || 0;
                     difference = numeral(difference).format('($0.[0]a)');
                     let newStampDuty = input["new"] || 0;
-                    newStampDuty = numeral(newStampDuty).format('($0.[0] a)');
-                    select("#stampDutyNumber").text(difference);
+                    newStampDuty = numeral(newStampDuty).format('($0.[0]a)');
+                    select("#stampDutyNumber").text(newStampDuty);
                     break;
                  case "interestPayments":
-                    let IP = numeral(input).format('($0,0)');
+                    let IP = numeral(input).format('($0,[0][0])');
                     let propertyWorth = numeral(userInputHolders.propertyValue).format('($0,0)');
-                    let principal2 = numeral(userInputHolders.principal).format('($0,0)');
+                    let principal2 = numeral(userInputHolders.principal).format('($0a)');
                     select("#principal2").text(principal2);
                     select("#interestPayments").text(IP);
                     select("#housePriceResult2").text(propertyWorth);
@@ -108,7 +115,28 @@ numeral.language('en-gb');
                     if (input<0) {input = 0};
                     let wtdifference = numeral(input).format('($ 0)');
                     select("#WTDifference").text(wtdifference);
+                    break;
+                case "radioInput":
+                    userInputHolders.floor = input
+                    if (input === "newFloor") { 
+                        select("#icr").text("145") 
+                        select("#LTVcaption").text(texts.newLTVCaption)
+                        select("#principalCaption").text(texts.newPrincipalCaption)
+                    } 
+                    else { 
+                        select("#icr").text("125") 
+                        select("#LTVcaption").text(texts.oldLTVCaption)
+                        select("#principalCaption").text(texts.oldPrincipalCaption)
+                    }
+                    console.log(userInputHolders.floor)
+                    calc.loanCalculations(userInputHolders.floor);
+                    calc.taxCalculations();
+
                 };
+
+                select("#principalTitle").text(texts.principalTitle);
+                select("#LTVTitle").text(texts.LTVTitle);
+                select("#stampDutyTitle").text(texts.stampDutyTitle);
                 select("#rentalIncomeResult").text(numeral(userInputHolders.rentalIncome/12).format('$0,0[.]00'));
                 select("#housePriceResult").text(numeral(userInputHolders.propertyValue).format('$0,0[.]00'));
                 select("#mortgageRateResult").text(numeral(userInputHolders.interestRate).format('0%'));
@@ -121,9 +149,10 @@ numeral.language('en-gb');
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    
     calc.stampDutyCalculations();
     calc.taxCalculations();
-    calc.loanCalculations();
+    calc.loanCalculations(userInputHolders.floor);
     // make hover effects work on touch devices
     oHoverable.init();
 
@@ -133,11 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', resize);
 
     slider.create();
-    textInput.create();
+    
     //table.create();
 
     slider.initialize();
-
+    textInput.create();
+    router("radioInput", "newFloor")
 
 
    let resize =  function resize() {

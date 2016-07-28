@@ -13,7 +13,7 @@ let percentageNumber = 4;
 
 
 let calc = {
-		loanCalculations: function () {
+		loanCalculations: function (floor) {
 			let doCalcs = function (floor) {
 				let depositNotChecked = -((userInputHolders.rentalIncome - floor * (userInputHolders.stressTestIR * userInputHolders.propertyValue)) / (userInputHolders.stressTestIR * floor));
 				let depositChecked = 0;
@@ -27,9 +27,7 @@ let calc = {
 
 				let principal = userInputHolders.propertyValue - depositChecked;
 				
-				if (floor=userInputHolders.floorNew) {
-					userInputHolders.principal = principal
-				}
+				userInputHolders.principal = principal
 
 				let maxLTV = principal / userInputHolders.propertyValue;
 				
@@ -37,22 +35,43 @@ let calc = {
 				return array
 			}
 
-			let oldRulesArray = doCalcs(userInputHolders.floorOld);
-			let newRulesArray = doCalcs(userInputHolders.floorNew);
-			let interestPayments = userInputHolders.principal * userInputHolders.interestRate
-			router("interestPayments", interestPayments)
+			let passObject = {};
 
-			let passObject = {
-				"depositDifference": newRulesArray[0] - oldRulesArray[0],
-				"LTVDifference": oldRulesArray[2] - newRulesArray[2],
-				"LTV": newRulesArray[2],
-				"principal": newRulesArray[1],
-				"deposit": newRulesArray[0]
-			}
+			if (floor === "newFloor") {
 
-			router("calcLoan", passObject);	
+				let oldRulesArray = doCalcs(userInputHolders.floorOld);
+				let newRulesArray = doCalcs(userInputHolders.floorNew);
+
+				passObject = {
+					"depositDifference": newRulesArray[0] - oldRulesArray[0],
+					"LTVDifference": oldRulesArray[2] - newRulesArray[2],
+					"LTV": newRulesArray[2],
+					"principal": newRulesArray[1],
+					"deposit": newRulesArray[0]
+				}
+
+				} else if (floor === "oldFloor") {
+
+				let oldRulesArray = doCalcs(userInputHolders.floorOld);
 				
-		},
+				passObject = {
+					"depositDifference": 0,
+					"LTVDifference": 0,
+					"LTV": oldRulesArray[2],
+					"principal": oldRulesArray[1],
+					"deposit": oldRulesArray[0]
+				} 
+				} else  {
+					console.log("error occurred, no floor defined")
+					return
+				}
+
+				let interestPayments = userInputHolders.principal * userInputHolders.interestRate
+				router("interestPayments", interestPayments)
+
+				router("calcLoan", passObject);	
+
+			},
 
 		stampDutyCalculations: function () {
 
@@ -100,8 +119,8 @@ let calc = {
 		let interestPayments = userInputHolders.principal * userInputHolders.interestRate, //
 			profits = userInputHolders.rentalIncome - interestPayments;
 
-			console.log(userInputHolders.principal * userInputHolders.interestRate)
 			
+
 		let employmentTaxes = calculateTaxes(userInputHolders.employment)
 		let WTdeductions = userInputHolders.WTdeductions;
 		let old_WTdeductions = WTdeductions === 0 ? 0 : (userInputHolders.rentalIncome - interestPayments) * 0.1
@@ -118,7 +137,6 @@ let calc = {
 				WTTotalTax = [],
 				WTProfitAfterTax = [];	
 
-			console.log("IIPEE" + interestPayments);
 
 			interestReliefArray.map(function(value, key, object)
 			{

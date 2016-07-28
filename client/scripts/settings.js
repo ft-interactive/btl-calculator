@@ -9,15 +9,26 @@ let userInputHolders = {
     WTdeductions: 0,
     otherTaxDeductions: 0, // If you want that some tax deductions (other than Wear and tear and interest relief) are factored in the calculations - no user input for this!!!
 
-    // change these if you know what you are doing
+    // Change these if you know what you are doing
     stressTestIR: 0.055,
     floorNew: 1.45,
     floorOld: 1.25,
 
-    // don't change!
+    // Don't change!
     principal: 0,
+    floor: "newFloor",
     oldWTDeductions: 2580
 };
+
+let texts = {
+  principalTitle: "...get a loan worth of...",
+  LTVTitle: "... with a leverage of...",
+  stampDutyTitle: "...and pay a stamp duty of",
+  oldPrincipalCaption: "The amount that could be borrowed. It is assumed rent needs to cover 125 per cent of the interest payments at 5.5 per cent interest rate." , 
+  newPrincipalCaption: "The amount that could be borrowed. It is assumed rent needs to cover 145 per cent of the interest payments at 5.5 per cent interest rate." ,
+  oldLTVCaption: "The loan-to-value (LTV) leverage. It is assumed rent needs to cover 125 per cent of the interest payments at 5.5 per cent interest rate. " ,
+  newLTVCaption: "The loan-to-value (LTV) leverage. It is assumed rent needs to cover 145 per cent of the interest payments at 5.5 per cent interest rate. "
+}
 
 let stampDutySettings = {
     oldLimits: [125000,250000,925000,1500000],
@@ -80,4 +91,4 @@ let languageSettings = {
 
 
 
-export { taxbands, details, personalAllowance, userInputHolders, languageSettings, stampDutySettings, interestReliefArray }
+export { taxbands, details, personalAllowance, userInputHolders, texts, languageSettings, stampDutySettings, interestReliefArray }

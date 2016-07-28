@@ -274,6 +274,10 @@ p {
   color: #43423e;
 }
 
+.o-forms-radio--highlight + .o-forms-label::after {
+    background-color: #76acb8;
+}
+
 .rangeright {
   float: right;
   text-align: right;
@@ -284,8 +288,17 @@ p {
   color: #43423e;
 }
 
-.question {
+.question_slider {
   margin-bottom: 10px
+}
+
+.question_textinput {
+  margin-bottom: 5px
+}
+
+.question_add {
+  margin-bottom: 5px;
+  font-size: smaller
 }
 
 .slideLabelBig {

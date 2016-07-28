@@ -82,9 +82,16 @@
                         <span class="article__byline">By <a href="https://twitter.com/AnttiSaarenpaa" target="_blank">Antti Saarenpaa</a> and <a href="https://twitter.com/sdbernard">Steve Bernard</a></span>
                         <span class="article__byline--updated">Published <time class="article__timestamp">August XX, 2016</time></span>
                     </p>
-                    <p class="o-typography-lead introtext">
-                        Intro text here to explain what is happening with the introduction of the new legislation and how many landlords will be affected
-                    </p>
+<p class="o-typography-lead introtext"><b>Stamp duty</b>.
+                       
+<br>From April 1 this year, buy-to-let and second home purchases began incurring a three percentage point surcharge. So someone buying a £500,000 home now pays £30,000 in stamp duty, up from £15,000.</br></p>
+<p class="o-typography-lead introtext"><b>Income tax</b>
+<br>Landlords can currently offset mortgage interest payments against rental income, meaning higher rate payers can claim increased levels of relief. This will be phased out between 2017 and 2020 and replaced with a tax credit capped at a maximum 20 per cent.</p>
+<p class="o-typography-lead introtext"><b>Lending rules</b>
+<br>The Bank of England is considering regulating buy-to-let lending, so that monthly rent must cover 125 per cent of mortgage interest payments — under “stressed” interest rates of 5.5 per cent.
+<p class="o-typography-lead introtext"><b>Wear and tear</b>
+<br>Before April, landlords were allowed to deduct one-tenth of their rental income when calculating taxable profit to cover “wear and tear”. Now they can deduct only the costs they actually incur on replacing furnishings.
+</p>
                 </div>
             </div>
             <div class="intro">
@@ -120,13 +127,23 @@
                     <div class="o-grid-row">
                         <div data-o-grid-colspan="12 M10 L8 center">
                             <div data-o-grid-colspan="12 S12" id="textInputHolder" class="outputs">
+                    <div data-o-grid-colspan="12 S6">
+                   <div class="o-forms-group">
+                    <label class="o-forms-label">Calculations based on:</label>
+                        <input type="radio" id="oldFloor" name="radio" value="1" class="o-forms-radio"></input>
+                        <label for="oldFloor" class="o-forms-label">125 per cent interest coverage ratio (ICR)</label>
+                        <input type="radio" name="radio" id="newFloor" value="3" class="o-forms-radio o-forms-radio--highlight" checked></input>
+                        <label for="newFloor" class="o-forms-label">145 per cent ICR </label>
+                    </div>
+                    </div>
+
                             </div>
                         </div>
                     </div>
                 
                 <div class="dynamictext o-grid-row">
                     <div data-o-grid-colspan="12 M10 L8 center">
-                         <p>Now it is common that lender except borrower to show that rent will cover 145 per cent of the interest payments at 5.5 per cent interest rate. The industry standard used to be/is considered to be 125 per cent.</p><p> You estimated  the monthly rental income to be <span id="rentalIncomeResult" class="rental-income dynamictext__highlights">£850</span> on a property worth <span id="housePriceResult" class="house-price dynamictext__highlights">£450,000</span>. Under the new 145 per cent standard you will: </p>
+                      <p> You estimated  the monthly rental income to be <span id="rentalIncomeResult" class="rental-income dynamictext__highlights">£850</span> on a property worth <span id="housePriceResult" class="house-price dynamictext__highlights">£450,000</span>. Under the <span id="icr" class="icr dynamictext__highlights">145</span> per cent standard you will: </p>
                      </div>
                 </div>
 
@@ -135,23 +152,23 @@
                         <div class="o-grid-row">
                             <div data-o-grid-colspan="12 S4">
                                 <div class="o-big-number o-big-number--standard">
-                                    Require an additional deposit of
-                                    <div class="o-big-number__title"><span id="depositNumber">0</span></div>
+                                    <span id="principalTitle"></span>
+                                    <div class="o-big-number__title"><span id="principalNumber">0</span></div>
                                 </div>
-                                <div class="o-big-number o-big-number__content">
-                                    The amount of extra money you need to meet the possible 145 per cent floor. The difference is calculated from a scenario where 125 per cent floor is assumed.
+                                <div class="o-big-number o-big-number__content" >
+                                <span id="principalCaption"></span>
                              <a href="https://next.ft.com/content/4c4c557e-2c93-11e6-a18d-a96ab29e3c95"> Find out more.</a> </div>
                             </div>
                             <div data-o-grid-colspan="12 S4">
                                 <div class="o-big-number o-big-number--standard">
-                                    Face a drop in leverage (loan-to-value) of
-                                    <div class="o-big-number__title"><span id="percentageNumber">0</span></div>
+                                    <span id="LTVTitle"></span>
+                                    <div class="o-big-number__title"><span id="LTVNumber">0</span></div>
                                 </div>
-                                <div class="o-big-number o-big-number__content">The drop in LTV in percentage points if 145 per cent floor is assumed. Maximum leverage is now <span id="LTV"></span>. The difference is calculated from 125 per cent floor scenario. <a href="https://next.ft.com/content/4c4c557e-2c93-11e6-a18d-a96ab29e3c95"> Find out more.</a> </div>
+                                <div class="o-big-number o-big-number__content"><span id="LTVcaption"></span> <a href="https://next.ft.com/content/4c4c557e-2c93-11e6-a18d-a96ab29e3c95"> Find out more.</a> </div>
                             </div>
                             <div data-o-grid-colspan="12 S4">
                                 <div class="o-big-number o-big-number--standard">
-                                    Pay a stamp duty extra worth of
+                                    <span id="stampDutyTitle"></span>
                                     <div class="o-big-number__title"><span id="stampDutyNumber">0</span></div>
                                 </div>
                                 <div class="o-big-number o-big-number__content">In Chancellor's autumn statement 2015 a 3 per cent extra stamp duty surcharge was introduced. It stepped into effect on 1st of April. <a href="https://next.ft.com/content/f485cfd2-937c-11e5-b190-291e94b77c8f"> Find out more.</a> </div>
@@ -176,9 +193,8 @@
                 -->
                 <div class="dynamictext o-grid-row">
                     <div data-o-grid-colspan="12 M10 L8 center">
-                        <p>This far, landlords have been able to receive relief on mortgage interest payments according to their marginal tax rate.  From 2020 onwards, the relief is restricted to the basic 20 per cent for all landlords.</p>
 
-                        <p> If mortgage interest rate is <span id="mortgageRateResult" class="mortgage-rate dynamictext__highlights">3.5 per cent </span> and loan principal <span id="principal2"></span> (calculated from a property worth <span id="housePriceResult2" class="house-price dynamictext__highlights">xxx</span>) , your annual interest payments will be <span id="interestPayments"></span>.</p><p> Moreover, assuming the annual salary of <span id="salaryResult" class="salary dynamictext__highlights">£65,000</span> and top of that a monthly rental income of <span id="rentalIncomeResult" class="rental-income dynamictext__highlights">£850</span>, the buy-to-let cashflow could be estimated to develop as follows:</p>
+                        <p> If mortgage interest rate is <span id="mortgageRateResult" class="mortgage-rate dynamictext__highlights">3.5 per cent </span> on a loan worth <span id="principal2"></span>, your annual interest payments will be <span id="interestPayments"></span>.</p><p> Assuming the annual salary of <span id="salaryResult" class="salary dynamictext__highlights">£65,000</span> and top of that a monthly rental income of <span id="rentalIncomeResult" class="rental-income dynamictext__highlights">£850</span>, the buy-to-let cashflow could be estimated to develop as follows:</p>
                         
                     <div class="table">
                         <div class="o-grid-row">
@@ -227,7 +243,7 @@
              </div>
             <div class="dynamictext o-grid-row">
                 <div data-o-grid-colspan="12 M10 L8 center">
-                       If you let a furnished house, chances are your returns will take hit also because the automatic 10 per cent 'wear and tear' reduce was scrapped. From now on it will be possible to claim deductions only to amount you really spend on furnishings.</p>
+                       If you let a furnished house, chances are your returns will take hit also because the automatic 10 per cent 'wear and tear' reduce was scrapped.</p>
                 </div>
             </div>
                 <div class=" o-grid-row">
@@ -238,7 +254,7 @@
                                  Tax tax increase because of changes in "W&T rules" 
                                  <div class="o-big-number__title"><span id="WTDifference">0</span></div>
                                 </div>
-                                <div class="o-big-number o-big-number__content">The amount of taxes you need to pay more because of the change in W&T rules. Inputted employment and rental income, interest rate and estimatons on your interest payments are taken into account. <a href="https://next.ft.com/content/7daeaa2a-be9a-11e5-9fdb-87b8d15baec2"> Find out more</a> about what happened to wear and tear.</a>  </div>
+                                <div class="o-big-number o-big-number__content">The amount of taxes you need to pay more because of the change in W&T rules. Input employment and rental income, interest rate and estimatons on your interest payments are taken into account. <a href="https://next.ft.com/content/7daeaa2a-be9a-11e5-9fdb-87b8d15baec2"> Find out more</a> about what happened to wear and tear.</a>  </div>
                             </div>
                         </div>
                 </div>
