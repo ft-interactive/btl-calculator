@@ -16,14 +16,18 @@ let Widget = {
         eventListeners: function ()  {  
             // EL for text inputs
             selectAll('.o-forms-text').on('input', function(d, i) {
+                let output = this.value
+            console.log(this.id)
+            if (this.id != "interestRate") {
                 select(this).property('value', numeral(this.value).format('0,0'));
-                let output = numeral().unformat(this.value);
+                output = numeral().unformat(this.value); 
+            }
                 let source = this.id;
                 router(source, output);
             });
             // EL for sliders
             selectAll('#slider').on('input', function(d, i) {
-                // console.log(this.parentElement);
+                
                 let lab = this.parentElement.children[4].id,
                     pos = Number(this.value),
                     newX = slider.calcLabelPos(pos, 'slider', 'else', i);
@@ -103,10 +107,15 @@ slider.create = function() {
 };
 
 slider.moveLabel = function(divId, labelText, pos) {
+
         let topPos = 0;
         if ((window.innerWidth) > 640) {
-            topPos = -79;
-        } else { topPos = -80; };
+            topPos = -75;
+        } else { topPos = -75; };
+        if( navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ){
+            // Firefox fix
+            topPos = -98
+        }
         osoite = '#' + divId;
         label = select(osoite)
             .html(labelText)
@@ -144,7 +153,8 @@ slider.calcLabelPos = function(pos, SliderID, state, number) {
             gradualOffset = (slider.value/slider.max * 32);} 
             else { 
             staticOffset = -2
-            gradualOffset = 0
+
+            gradualOffset = (slider.value/slider.max * 32)
             }
             array = point - staticOffset - gradualOffset;
         });
@@ -166,7 +176,11 @@ slider.calcLabelPos = function(pos, SliderID, state, number) {
             gradualOffset = (slider.value/slider.max * 32);} 
             else { 
             staticOffset = -1
-            gradualOffset = -(slider.value/slider.max * 5 )
+            gradualOffset = (slider.value/slider.max * 5 )
+               if( navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ){
+            // Firefox fix
+            gradualOffset =  (slider.value/slider.max * 5 )
+        }
             }
             array = point - staticOffset - gradualOffset;
         };
@@ -175,20 +189,33 @@ slider.calcLabelPos = function(pos, SliderID, state, number) {
 };
 
 textInput.textInputTemplate = function(object) {
+     console.log(object.id)
+    let size, max;
+    if (object.ie===true && object.id != "interestRate") {
+        size = "<div data-o-grid-colspan='12 S6'>";
+        max = "7"
+    } else if (object.ie === true && object.id === "interestRate") {
+        size = "<div data-o-grid-colspan='12 S6'>";
+        object.info = object.info + " in % e.g. 0.5, 2.1, 3"
+        max = "3"
+    } else {
+        size = "<div data-o-grid-colspan='12 S3'>";
+        max = "8"
+    }
 
     return `
-    <div data-o-grid-colspan="12 S3">
+    ${size}
     <div class="textInput">
       <div class="o-forms-group">
         <div class="question_textinput">${object.info}</div>
         <div class="question_add">${object.info_add}</div>
-        <input maxlength="8" type="text" value=${numeral(object.initialValue).format('0,0')} id=${object.id} placeholder="placeholder" class="o-forms-text"></input>
+        <input maxlength=${max} type="text" value=${numeral(object.initialValue).format('0,0')} id=${object.id} placeholder="placeholder" class="o-forms-text"></input>
       </div>
     </div>
     </div>
   `;
 };
-
+             
 radioButtons.radioInputTemplate = function(object) {
     return `
     <div data-o-grid-colspan="12 S6">
@@ -216,9 +243,10 @@ radioButtons.create = function(object) {
     }
 };
 
-textInput.create = function() {
+textInput.create = function(ie) {
     //  let thisbind = this.moveLabel.bind(callback);
     //  let thisbind2 = this.sliderTemplate.bind(callback);
+
     textInputSettings.forEach(callback);
 
     function callback(element, index, array) {
@@ -230,10 +258,27 @@ textInput.create = function() {
             .attr('id', 'textInput')
             .html(textInput.textInputTemplate(textInputSettings[i]));
 
-        // Let's send the stuff to moveLabel() which creates the label
-        // and positions it
+       
+    }
+ 
+
+         // IF the user uses IE, we have to replace all the sliders with textinputs
+    if (ie === "IE") {
+        sliderSettings.forEach(callback);
+        //object.info   object.info_add    object.initialValue   object.id    
+        // HTML         --                       Pos             labName
+        function callback(element, index, array) {
+         let i = index
+        let objekti = { info: sliderSettings[i].HTML, info_add: "",  initialValue: sliderSettings[i].Pos  , id: sliderSettings[i].labName, ie: true};
+        let inputHolder = select(sliderSettings[i].destination);
+            inputHolder
+                .insert("div",":first-child")
+                .attr('id', 'textInput')
+                .html(textInput.textInputTemplate(objekti));
+        } 
     }
     Widget.eventListeners();
+
 };
 
 table.create = function() {

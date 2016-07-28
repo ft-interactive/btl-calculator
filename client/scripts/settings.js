@@ -5,9 +5,9 @@ import {calcIncomeTax, calcPersonalAllowance } from './tax_calculations'
 
 let userInputHolders = {
   // feel free to change
-    propertyValue: 700000,
+    propertyValue: 350000,
     employment: 65000,
-    rentalIncome: 2150*12,
+    rentalIncome: 1150*12,
     interestRate: 0.01,
     WTdeductions: 0,
     otherTaxDeductions: 0, // If you want that some tax deductions (other than Wear and tear and interest relief) are factored in the calculations - no user input for this!!!
@@ -62,8 +62,8 @@ let sliderSettings = [{
         'labelcss': 'slideLabelSmall',
         'sliderID': 'slider',
         'min': 0,
-        'max': 7,
-        'step': 1, 
+        'max': 6,
+        'step': 0.5, 
         'labelright': "%",
         'destination': '#controls'
     },
