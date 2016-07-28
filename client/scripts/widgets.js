@@ -4,7 +4,7 @@ import { transition } from 'd3-transition';
 import d3 from 'd3';
 import { calculateTaxes } from './tax_calculations';
 import { calc } from './other_calculations';
-import { userInputHolders, sliderSettings } from './settings';
+import { userInputHolders, sliderSettings, textInputSettings, tableArraySettings, radioInputSettings } from './settings';
 const numeral = require('numeral');
 
 
@@ -47,34 +47,6 @@ let Widget = {
             }
 
     };
-
-
-
-
-let textInputSettings = [{
-        'info': 'Rental income',
-        'info_add': '£ per month ',
-        'id': 'rentalIncome',
-        'initialValue': userInputHolders.rentalIncome/12
-    }, {
-        'info': 'Property value',
-        'info_add': '£',
-        'id': 'propertyValue',
-        'initialValue': userInputHolders.propertyValue
-    }];
-
-let tableArraySettings = [{
-      // initial values
-        'rentalIncome': 100,
-        'employment': 1000,
-        'fd': 12322
-    }];
-
-let radioInputSettings = [{
-        "firstOption": "125 per cent interest coverage ratio (ICR)",
-        "secondOption": "145 per cent ICR",
-        "IRCTitle": "Calculations based on:"
-}];
 
 let htmlString = '',
         label = 0,

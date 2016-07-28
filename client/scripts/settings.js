@@ -103,7 +103,7 @@ let tableArraySettings = [{
 
 let radioInputSettings = [{
         "firstOption": "125 per cent interest coverage ratio (ICR)",
-        "secondOption": "145 per cent ICR",
+        "secondOption": "145 per cent interest coverage ratio (ICR)",
         "IRCTitle": "Calculations based on:"
 }];
 

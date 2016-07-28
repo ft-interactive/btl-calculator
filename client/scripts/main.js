@@ -174,14 +174,39 @@ document.addEventListener('DOMContentLoaded', () => {
     textInput.create();
     
     router("radioInput", "newFloor")
-    
+
+    let findOutMore = 0;
+
+
+    mobileStuff();
+    function mobileStuff () {
+        if(window.innerWidth<540 && findOutMore === 0) {
+
+                    select("#table").select('tr:nth-child(4)')
+                    select("#table").select('tr:nth-child(4)').remove()
+                    select("#table").select('th:nth-child(1)').style("opacity", "0")
+                    selectAll(".o-big-number--standard").style("text-align", "center")
+                    selectAll(".question_textinput , .question_add").style("text-align", "center")
+                    selectAll(".table").style("margin-left", "20px") 
+                    findOutMore = 1;       
+
+             }
+
+        if (window.innerWidth >540 && findOutMore === 1) {
+                        findOutMore = 0
+                        select("#table").select('tr').select('#table a').remove()
+                     
+                    }
+    }
+
     function resize() {
+        console.log(window.innerWidth)
          selectAll ('#slider').each(function (d, i) {
-         console.log("triggered")
          let lab = this.parentElement.children[4].id;
          let pos = Number(this.value);
          let newX = slider.calcLabelPos(pos, 'slider', 'else', i);
          slider.moveLabel(lab, pos, newX);
+         mobileStuff();
         });
     
        
