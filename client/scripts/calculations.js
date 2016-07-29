@@ -1,6 +1,7 @@
+/*jshint esversion: 6 */
 const numeral = require('numeral');
 import { router } from './router';
-import { taxbands, userInputHolders, stampDutySettings, interestReliefArray, details, personalAllowance } from './settings'
+import { taxbands, userInputHolders, stampDutySettings, interestReliefArray, details, personalAllowance } from './settings';
 
 
 let calc = {
@@ -13,18 +14,18 @@ let calc = {
                 depositChecked = userInputHolders.propertyValue * 0.25;
             } else {
                 depositChecked = depositNotChecked;
-            };
+            }
 
 
             let principal = userInputHolders.propertyValue - depositChecked;
 
-            userInputHolders.principal = principal
+            userInputHolders.principal = principal;
 
             let maxLTV = principal / userInputHolders.propertyValue;
 
-            let array = [depositChecked, principal, maxLTV]
-            return array
-        }
+            let array = [depositChecked, principal, maxLTV];
+            return array;
+        };
 
         let passObject = {};
 
@@ -39,7 +40,7 @@ let calc = {
                 "LTV": newRulesArray[2],
                 "principal": newRulesArray[1],
                 "deposit": newRulesArray[0]
-            }
+            };
 
         } else if (floor === "oldFloor") {
 
@@ -51,14 +52,14 @@ let calc = {
                 "LTV": oldRulesArray[2],
                 "principal": oldRulesArray[1],
                 "deposit": oldRulesArray[0]
-            }
+            };
         } else {
-            console.log("error occurred, no floor defined")
-            return
+            console.log("error occurred, no floor defined");
+            return;
         }
 
-        let interestPayments = userInputHolders.principal * userInputHolders.interestRate
-        router("interestPayments", interestPayments)
+        let interestPayments = userInputHolders.principal * userInputHolders.interestRate;
+        router("interestPayments", interestPayments);
 
         router("calcLoan", passObject);
 
@@ -72,35 +73,35 @@ let calc = {
             // TODO: Tidy this
 
             function callback(element, index, array) {
-                let value = userInputHolders.propertyValue > element
-                value = value ? 1 : 0
-                let value2 = userInputHolders.propertyValue - element
-                let value3 = value * value2
-                return value3
+                let value = userInputHolders.propertyValue > element;
+                value = value ? 1 : 0;
+                let value2 = userInputHolders.propertyValue - element;
+                let value3 = value * value2;
+                return value3;
             }
 
             let trueOrFalse = Array1.map(callback);
 
             function callbackSecond(element, index, array) {
-                return trueOrFalse[index] * element
+                return trueOrFalse[index] * element;
             }
 
-            let totalArray = Array2.map(callbackSecond)
+            let totalArray = Array2.map(callbackSecond);
             let sum = totalArray.reduce(function(a, b) {
                 return a + b;
             }, 0);
 
 
-            return sum
+            return sum;
 
-        }
+        };
 
         let newRulesSum = doCalcs(stampDutySettings.newLimits, stampDutySettings.newTaxBrackets);
         let oldRulesSum = doCalcs(stampDutySettings.oldLimits, stampDutySettings.oldTaxBrackets);
         let passObject = {
             "difference": newRulesSum - oldRulesSum,
             "new": newRulesSum
-        }
+        };
 
         router("stampDuty", passObject);
 
@@ -115,9 +116,9 @@ let calc = {
 
 
 
-        let employmentTaxes = calculateTaxes(userInputHolders.employment)
+        let employmentTaxes = calculateTaxes(userInputHolders.employment);
         let WTdeductions = userInputHolders.WTdeductions;
-        let old_WTdeductions = WTdeductions === 0 ? 0 : (userInputHolders.rentalIncome - interestPayments) * 0.1
+        let old_WTdeductions = WTdeductions === 0 ? 0 : (userInputHolders.rentalIncome - interestPayments) * 0.1;
         let otherTaxDeductions = userInputHolders.otherTaxDeductions;
         let WTDifference = WTdeductions - old_WTdeductions;
 
@@ -133,17 +134,17 @@ let calc = {
 
 
         interestReliefArray.map(function(value, key, object) {
-            i += 1
+            i += 1;
             interestTaxable.push(interestPayments - value * interestPayments);
             interestReliefPounds.push(interestPayments * value);
             taxableAmountNewWT.push(userInputHolders.rentalIncome - interestReliefPounds[i] - WTdeductions);
             taxableAmountOldWT.push(taxableAmountNewWT[i] + WTDifference);
         });
 
+        
+        let passObject = WTCalcs(taxableAmountNewWT);
 
-
-
-        let WTCalcs = function(input) {
+        function WTCalcs (input) {
             let WTTax = [],
                 WTTaxDeductionInterestRelief = [],
                 WTTotalTax = [],
@@ -152,30 +153,30 @@ let calc = {
             i = -1;
 
             input.map(function(value, key, object) {
-                i += 1
-                WTTax.push(calculateTaxes(userInputHolders.employment + value) - employmentTaxes)
-                let interestTaxableV = interestTaxable[Object.keys(interestTaxable)[i]]
+                i += 1;
+                WTTax.push(calculateTaxes(userInputHolders.employment + value) - employmentTaxes);
+                let interestTaxableV = interestTaxable[Object.keys(interestTaxable)[i]];
                 let dummy = 0;
                 if ((interestTaxableV * 0.2) > WTTax[i]) {
                     dummy = WTTax[i];
                 } else {
                     dummy = interestTaxableV * 0.2;
-                };
-                WTTaxDeductionInterestRelief.push(dummy)
-                WTTotalTax.push(WTTax[i] - WTTaxDeductionInterestRelief[i])
-                WTProfitAfterTax.push(userInputHolders.rentalIncome - interestPayments - WTdeductions - otherTaxDeductions - WTTotalTax[i])
+                }
+                WTTaxDeductionInterestRelief.push(dummy);
+                WTTotalTax.push(WTTax[i] - WTTaxDeductionInterestRelief[i]);
+                WTProfitAfterTax.push(userInputHolders.rentalIncome - interestPayments - WTdeductions - otherTaxDeductions - WTTotalTax[i]);
             });
 
             let WTTotalTaxChecked = WTTotalTax.map(function(value) {
                 value = value < 0 ? 0 : value;
-                value = -(value)
-                return value
+                value = -(value);
+                return value;
             });
 
             return [WTTotalTaxChecked, WTProfitAfterTax, profits];
         }
 
-        if (WT != undefined) {
+        if (WT !== undefined) {
             passObject = [WTCalcs(taxableAmountNewWT), WTCalcs(taxableAmountOldWT)];
 
 
@@ -185,11 +186,10 @@ let calc = {
 
             router("WTOut", sum[0]);
 
-            return // skip the rest
+            return; // skip the rest
         }
-
-        let passObject = WTCalcs(taxableAmountNewWT)
-        router("taxCalculations", passObject)
+       
+        router("taxCalculations", passObject);
 
     },
     whichTaxBand:  function() {
@@ -225,10 +225,10 @@ let calc = {
                        message= "you pay tax partly at 20 per cent, partly at 40 per cent and also partly at 45 per cent rate.";
                     }
         } else {
-            message = "error occurred"
+            message = "error occurred";
         }
 
-    router("whichTaxBand", message)
+    router("whichTaxBand", message);
     
     }
 
@@ -243,7 +243,7 @@ let calc = {
 // Usage:  calculateTaxes(sum) 
 // Could be used also outside the project
 
-let thisbind = calcPersonalAllowance.bind(personalAllowance)
+let thisbind = calcPersonalAllowance.bind(personalAllowance);
 
 function calculateTaxes(input) {
     return thisbind(input);
@@ -254,7 +254,7 @@ let income = 0;
 function calcPersonalAllowance(input) {
     // Basic
     let basicAllowance = this.basicAllowance;
-    income = input
+    income = input;
         // Age related contribution 
     let ageContribution = 0;
     if (details.age < 65) {
@@ -288,7 +288,7 @@ function calcPersonalAllowance(input) {
         taperDeduction = ((income - details.pensionContributions) - this.taperThreshold) / 2;
     }
 
-    let thisbind = calcIncomeTax.bind(taxbands)
+    let thisbind = calcIncomeTax.bind(taxbands);
         // And finally, the personal allowance 
     let personalAllowance = allowanceAgeAdjusted - taperDeduction;
     return thisbind(personalAllowance, income);
@@ -300,10 +300,10 @@ function calcIncomeTax(pA) {
     if (details.blind) {
         pa = pa + personalAllowance.blindAllowance;
     }
-    let personalAllowance = pa;
+    let pAllowance = pa;
 
     // Taxable income = income - allowances
-    let taxableIncome = income - personalAllowance;
+    let taxableIncome = income - pAllowance;
     let carryOver = taxableIncome;
     let basicTax = 0,
         hightTax = 0,
@@ -317,7 +317,7 @@ function calcIncomeTax(pA) {
     for (i in this) {
         if (carryOver > 0) { // if there is income left, then...
             if (carryOver >= this[i][1] - difference_old) { // income exceeds the bands limits
-                moreTax = (this[i][1] - difference_old) * this[i][0] // apply tax to band
+                moreTax = (this[i][1] - difference_old) * this[i][0];// apply tax to band
             } else {
                 moreTax = carryOver * this[i][0]; // income does not exceed the band
             }
@@ -333,9 +333,9 @@ function calcIncomeTax(pA) {
         difference_old = this[i][1];
     }
 
-    return totalTax
+    return totalTax;
 
 }
 
 
-export { calc, calcIncomeTax, calcPersonalAllowance, calculateTaxes, income }
+export { calc, calcIncomeTax, calcPersonalAllowance, calculateTaxes, income };
