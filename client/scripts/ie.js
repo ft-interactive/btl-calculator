@@ -1,7 +1,5 @@
 
 /* Copyright: Mario @gapcode https://codepen.io/gapcode/pen/vEJNZN
-
-
 /**
  * detect IE
  * returns version of IE or false, if browser is not Internet Explorer

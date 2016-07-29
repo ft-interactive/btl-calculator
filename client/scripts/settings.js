@@ -1,5 +1,3 @@
-import {calcIncomeTax, calcPersonalAllowance } from './tax_calculations'
-
 
 /////// THE INITIAL VALUES
 
