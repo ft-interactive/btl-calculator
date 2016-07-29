@@ -16,7 +16,7 @@ $font-display: FinancierDisplayWeb, Georgia, serif;
 
 body {
   @include oColorsFor(page, background);
-
+  
   margin: 0;
   border: 0;
   font-family: $font-sans;
@@ -26,6 +26,7 @@ body {
     text-decoration: none;
     color: #2e6e9e;
   }
+  font-feature-settings: "tnum";
 }
 
 .o-big-number{

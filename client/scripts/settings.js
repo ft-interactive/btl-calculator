@@ -118,7 +118,6 @@ let stampDutySettings = {
 let interestReliefArray = [1, 0.75, 0.5, 0.25, 0];
 
 let taxbands = {
-	//zero: [0,0], // not needed anymore?
 	basic: [0.2, 32000],
 	higher: [0.4, 150000],
 	top: [0.45, 99999999999],
