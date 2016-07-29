@@ -62,6 +62,7 @@ let calc = {
 
         router("calcLoan", passObject);
 
+
     },
 
     stampDutyCalculations: function() {
@@ -190,11 +191,57 @@ let calc = {
         let passObject = WTCalcs(taxableAmountNewWT)
         router("taxCalculations", passObject)
 
+    },
+    whichTaxBand:  function() {
+        
+        // This thing tells user in which tax band he is 
+
+        let employment = userInputHolders.employment,
+            rentalincome = userInputHolders.rentalIncome,
+            message = "",
+            pAllowance = personalAllowance.basicAllowance,
+            basic = pAllowance,
+            higher = taxbands.basic[1] + pAllowance, 
+            top = taxbands.higher[1],
+            total = employment + rentalincome;
+
+        if(total < pAllowance) {
+                console.log("not tax");
+                message="you pay no tax.";
+        } else if (total > pAllowance && total <= higher) {
+                message= "you pay tax at 20 per cent rate.";
+        } else if (higher < total && total < top) {
+                if (employment >= higher) {
+                       message= "you pay tax at 40 per cent rate.";
+                    } else {
+                       message= "you pay tax partly at 20 per cent and partly at 40 per cent rate. ";
+                    }
+        } else if (total > top) {
+                if (employment >= top) {
+                       message= "you pay tax at 45 per cent rate.";
+                    } else if (higher < employment && employment <= top){
+                       message= "you pay tax partly at 40 per cent and partly at 45 per cent rate.";
+                    } else {
+                       message= "you pay tax partly at 20 per cent, partly at 40 per cent and also partly at 45 per cent rate.";
+                    }
+        } else {
+            message = "error occurred"
+        }
+
+    router("whichTaxBand", message)
+    
     }
+
+
 };
+
+
+
+
 
 // This scipt calculates the AMOUNT OF TAXES for any given sum 
 // Usage:  calculateTaxes(sum) 
+// Could be used also outside the project
 
 let thisbind = calcPersonalAllowance.bind(personalAllowance)
 

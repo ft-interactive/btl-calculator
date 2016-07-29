@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     calc.loanCalculations(userInputHolders.floor);
     radioButtons.create();
     router("radioInput", "newFloor")
-
+    calc.whichTaxBand();
     // make hover effects work on touch devices
     oHoverable.init();
 
@@ -45,15 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+
     } else {
       textInput.create("IE");
       mobileStuff();
     }
    
-  
+    
+
     function mobileStuff () {
         if(window.innerWidth<540 && findOutMore === 0) {
-                    console.log("trigged")
+                    
                     select("#table").select('tr:nth-child(4)').style('visibility', 'hidden');
                     select("#table").select('th:nth-child(1)').style("opacity", "0");
                     selectAll(".o-big-number--standard").style("text-align", "center");

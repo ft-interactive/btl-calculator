@@ -21,15 +21,19 @@ const numeral = require('numeral');
                           select(this.parentElement.children[3]).text(numeral(newmax).format('($0)'));
                         };
                     })
+                    calc.whichTaxBand();
                     break;
                 case "employment":
                     userInputHolders.employment = input;
                     //selectAll('#tableTax').text(output);
                     calc.taxCalculations();
+                    calc.whichTaxBand();
                     break;
                 case "interestRate":
                     userInputHolders.interestRate = input / 100;
-                    //selectAll('#tableTax').text(output);
+                    let IP = userInputHolders.principal * userInputHolders.interestRate
+                    IP = numeral(IP).format('($0,[0][0])');
+                    select("#interestPayments").text(IP);
                     calc.taxCalculations();
                     selection = selectAll('#slider')
                     selection.each(function (d, i) {
@@ -81,7 +85,7 @@ const numeral = require('numeral');
                     select("#stampDutyNumber").text(newStampDuty);
                     break;
                  case "interestPayments":
-                    let IP = numeral(input).format('($0,[0][0])');
+                    IP = numeral(input).format('($0,[0][0])');
                     let propertyWorth = numeral(userInputHolders.propertyValue).format('($0,0)');
                     let principal2 = numeral(userInputHolders.principal).format('($0a)');
                     select("#principal2").text(principal2);
@@ -109,6 +113,9 @@ const numeral = require('numeral');
                     if (input<0) {input = 0};
                     let wtdifference = numeral(input).format('($ 0)');
                     select("#WTDifference").text(wtdifference);
+                    break;
+                case "whichTaxBand":
+                    select("#taxBandMessage").text(input)
                     break;
                 case "radioInput":
                     userInputHolders.floor = input
