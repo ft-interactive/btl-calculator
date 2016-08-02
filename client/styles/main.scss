@@ -345,6 +345,17 @@ p {
   margin-top: 10px;
   font-feature-settings: "tnum";
 }
+
+.o-table td {
+  font-weight: 400;
+}
+.o-table td:nth-child(1) {
+  font-weight: 600;
+}
+
+.o-table tr:nth-child(4) td{
+  font-weight: 400;
+}
 //Charts styling
 .dots {
   fill:#ffffff;

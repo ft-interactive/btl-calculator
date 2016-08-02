@@ -60,7 +60,7 @@ slider.sliderTemplate = function(annotations) {
     <div class="question_slider">${annotations.HTML}</div>
     <input class='slider' id=${annotations.sliderID} type='range' value=${annotations.pos} max=${annotations.max} min=${annotations.min} step=${annotations.step}>
     <div class='rangeleft'>${annotations.min}</div>
-    <div class='rangeright'>${numeral(annotations.max).format('0,0')} ${annotations.labelright}</div>
+    <div class='rangeright'>${numeral(annotations.max).format('0,0')}${annotations.labelright}</div>
     <div class=${annotations.labelcss} id=${annotations.labName} ${annotations.labelright}></div>
   </div>
   `;

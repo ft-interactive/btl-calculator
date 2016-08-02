@@ -112,7 +112,7 @@ const numeral = require('numeral');
                     break;
                 case "WTOut":
                     if (input<0) {input = 0;}
-                    let wtdifference = numeral(input).format('($ 0)');
+                    let wtdifference = numeral(input).format('($0)');
                     select("#WTDifference").text(wtdifference);
                     break;
                 case "whichTaxBand":

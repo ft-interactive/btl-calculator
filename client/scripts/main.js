@@ -57,16 +57,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function mobileStuff () {
         if(window.innerWidth<540 && findOutMore === 0) {
                     
-                    select("#table").select('tr:nth-child(4)').style('visibility', 'hidden');
+                    // select("#table").select('tr:nth-child(4)').style('visibility', 'hidden');
                     select("#table").select('th:nth-child(1)').style("opacity", "0");
                     selectAll(".o-big-number--standard").style("text-align", "center");
                     selectAll(".question_textinput , .question_add").style("text-align", "center");
                     selectAll(".table").style("margin-left", "20px").style("margin-top", "20px");
                     findOutMore = 1;      
                    // select("#table").select('tr').select('#table a').remove();
-                    select("#mobileFO").style('visibility', 'visible');
-                    select("#table").select('tr:nth-child(3)').append('td').attr('id', 'mobile').html('<a href="https://next.ft.com/content/07c586a2-7323-11e5-a129-3fcc4f641d98"> Find out more.</a>'); 
-                    select("tr:nth-child(3) td:nth-child(1)").style("text-align","right");
+                    // select("#mobileFO").style('visibility', 'visible');
+                    // select("#table").select('tr:nth-child(3)').append('td').attr('id', 'mobile').html('<a href="https://next.ft.com/content/07c586a2-7323-11e5-a129-3fcc4f641d98"> Find out more.</a>'); 
+                    // select("tr:nth-child(3) td:nth-child(1)").style("text-align","right");
         }
 
         if(window.innerWidth>540 && findOutMore === 1) {
