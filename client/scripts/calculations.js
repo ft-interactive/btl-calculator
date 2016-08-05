@@ -1,3 +1,4 @@
+
 /*jshint esversion: 6 */
 const numeral = require('numeral');
 import { router } from './router';
