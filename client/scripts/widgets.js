@@ -190,6 +190,7 @@ textInput.textInputTemplate = function(object) {
     return `
     ${size}
     <div class="textInput">
+        
       <div class="o-forms-group">
         <div class="question_textinput">${object.info}</div>
         <div class="question_add">${object.info_add}</div>
