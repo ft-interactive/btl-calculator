@@ -6,7 +6,7 @@ let userInputHolders = {
     propertyValue: 350000,
     employment: 65000,
     rentalIncome: 1150*12,
-    interestRate: 0.01,
+    interestRate: 0.025,
     WTdeductions: 0,
     otherTaxDeductions: 0, // If you want that some tax deductions (other than Wear and tear and interest relief) are factored in the calculations - no user input for this!!!
 
@@ -29,7 +29,7 @@ let texts = {
   principalTitle: "...get a loan worth...",
   LTVTitle: "... with a leverage of...",
   stampDutyTitle: "...and pay a stamp duty of",
-  oldPrincipalCaption: "The amount that could be borrowed. It is assumed rent needs to cover 125 per cent of the interest payments at 5.5 per cent interest rate." , 
+  oldPrincipalCaption: "The amount that could be borrowed. It is assumed rent needs to cover 125 per cent of the interest payments at 5.5 per cent interest rate." ,
   newPrincipalCaption: "The amount that could be borrowed. It is assumed rent needs to cover 145 per cent of the interest payments at 5.5 per cent interest rate." ,
   oldLTVCaption: "The loan-to-value (LTV) leverage. It is assumed rent needs to cover 125 per cent of the interest payments at 5.5 per cent interest rate. " ,
   newLTVCaption: "The loan-to-value (LTV) leverage. It is assumed rent needs to cover 145 per cent of the interest payments at 5.5 per cent interest rate. "
@@ -61,7 +61,7 @@ let sliderSettings = [{
         'sliderID': 'slider',
         'min': 0,
         'max': 6,
-        'step': 0.5, 
+        'step': 0.5,
         'labelright': "%",
         'destination': '#controls'
     },
@@ -75,7 +75,7 @@ let sliderSettings = [{
         'sliderID': 'slider',
         'min': 0,
         'max': (userInputHolders.rentalIncome - (userInputHolders.principal * userInputHolders.interestRate)) * 0.1,
-        'step': 10, 
+        'step': 10,
         'labelright': "+",
         'destination': '#controls2'
     }];
@@ -138,7 +138,7 @@ let personalAllowance = {
   taperThreshold:	100000,
 };
 
-/////// LANGUAGE SETTINGS 
+/////// LANGUAGE SETTINGS
 
 
 let languageSettings = {

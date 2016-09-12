@@ -11,8 +11,8 @@ const numeral = require('numeral');
             switch (source) {
                 case "rentalIncome":
                     userInputHolders.rentalIncome = input * 12;
-                    userInputHolders.oldWTdeductions = Math.round(userInputHolders.rentalIncome * 0.1); 
-                    calc.loanCalculations(userInputHolders.floor); 
+                    userInputHolders.oldWTdeductions = Math.round(userInputHolders.rentalIncome * 0.1);
+                    calc.loanCalculations(userInputHolders.floor);
                     calc.taxCalculations();
                     let selection = selectAll('#slider');
                     selection.each(function (d, i) {
@@ -49,11 +49,11 @@ const numeral = require('numeral');
                           router(lab, pos);
                         }
                     });
-                    
+
                     break;
                 case "propertyValue":
                     userInputHolders.propertyValue = input;
-                    calc.loanCalculations(userInputHolders.floor); 
+                    calc.loanCalculations(userInputHolders.floor);
                     calc.stampDutyCalculations();
                     calc.taxCalculations();
                     break;
@@ -63,13 +63,13 @@ const numeral = require('numeral');
 
                     let LTV = input["LTV"] || 0;
                     LTV = numeral(LTV).format('0%');
-                    
+
                     let deposit = input["depositDifference"] || 0;
                     deposit = numeral(deposit).format('($0a)');
-                    
+
                     let depositNeeded = input["deposit"] || 0;
                     depositNeeded = numeral(depositNeeded).format('$0,0');
-                    
+
                     let principal= input["principal"] || 0;
                     userInputHolders.principal = principal;
                     select("#percentageNumber").text(leverage);
@@ -88,7 +88,7 @@ const numeral = require('numeral');
                  case "interestPayments":
                     IP = numeral(input).format('($0,[0][0])');
                     let propertyWorth = numeral(userInputHolders.propertyValue).format('($0,0)');
-                    let principal2 = numeral(userInputHolders.principal).format('($0a)');
+                    let principal2 = numeral(userInputHolders.principal).format('($0,0)');
                     select("#principal2").text(principal2);
                     select("#interestPayments").text(IP);
                     select("#housePriceResult2").text(propertyWorth);
@@ -103,12 +103,12 @@ const numeral = require('numeral');
                         select("#niat" + [i]).text(niat);
                     }
                     break;
-                case "WT":       
+                case "WT":
                     userInputHolders.WTdeductions = input;
                     if (input === 0){
                         userInputHolders.WTdeductions = 1;}
-                    userInputHolders.oldWTdeductions = userInputHolders.rentalIncome * 0.1; 
-                    calc.taxCalculations("WT");  
+                    userInputHolders.oldWTdeductions = userInputHolders.rentalIncome * 0.1;
+                    calc.taxCalculations("WT");
                     break;
                 case "WTOut":
                     if (input<0) {input = 0;}
@@ -120,13 +120,13 @@ const numeral = require('numeral');
                     break;
                 case "radioInput":
                     userInputHolders.floor = input;
-                    if (input === "newFloor") { 
+                    if (input === "newFloor") {
                         select("#icr").text("145");
                         select("#LTVcaption").text(texts.newLTVCaption);
                         select("#principalCaption").text(texts.newPrincipalCaption);
-                    } 
-                    else { 
-                        select("#icr").text("125"); 
+                    }
+                    else {
+                        select("#icr").text("125");
                         select("#LTVcaption").text(texts.oldLTVCaption);
                         select("#principalCaption").text(texts.oldPrincipalCaption);
                     }
@@ -141,9 +141,9 @@ const numeral = require('numeral');
                 select("#stampDutyTitle").text(texts.stampDutyTitle);
                 select("#rentalIncomeResult").text(numeral(userInputHolders.rentalIncome/12).format('$0,0[.]00'));
                 select("#housePriceResult").text(numeral(userInputHolders.propertyValue).format('$0,0[.]00'));
-                select("#mortgageRateResult").text(numeral(userInputHolders.interestRate).format('0%'));
+                select("#mortgageRateResult").text(numeral(userInputHolders.interestRate).format('0[.]0%'));
                 select("#salaryResult").text(numeral(userInputHolders.employment).format('$0,0[.]00'));
-                if (userInputHolders.employment >= 150000) { 
+                if (userInputHolders.employment >= 150000) {
                      select("#salaryResult").text(numeral(userInputHolders.employment).format('$0,0[.]00') + " or more");
                 }
 
