@@ -26,13 +26,13 @@ let userInputHolders = {
 
 let texts = {
   IRCTitle: "Calculations based on xxxx:",
-  principalTitle: "...get a loan worth...",
-  LTVTitle: "... with a leverage of...",
-  stampDutyTitle: "...and pay a stamp duty of",
-  oldPrincipalCaption: "The amount that could be borrowed. It is assumed rent needs to cover 125 per cent of the interest payments at 5.5 per cent interest rate." ,
-  newPrincipalCaption: "The amount that could be borrowed. It is assumed rent needs to cover 145 per cent of the interest payments at 5.5 per cent interest rate." ,
-  oldLTVCaption: "The loan-to-value (LTV) leverage. It is assumed rent needs to cover 125 per cent of the interest payments at 5.5 per cent interest rate. " ,
-  newLTVCaption: "The loan-to-value (LTV) leverage. It is assumed rent needs to cover 145 per cent of the interest payments at 5.5 per cent interest rate. "
+  principalTitle: "...get a loan worth",
+  LTVTitle: "...with an LTV of",
+  stampDutyTitle: "...pay stamp duty of",
+  oldPrincipalCaption: "The amount that could be borrowed, if it is assumed rent needs to cover 125% of interest payments at 5.5%. " ,
+  newPrincipalCaption: "The amount that could be borrowed, if it is assumed rent needs to cover 145% of interest payments at 5.5%. " ,
+  oldLTVCaption: "The loan-to-value (LTV) ratio, assuming rent must cover 125% of interest payments at 5.5%. " ,
+  newLTVCaption: "The loan-to-value (LTV) ratio, assuming rent must cover 145% of interest payments at 5.5%. "
 }
 
 
@@ -100,8 +100,8 @@ let tableArraySettings = [{
     }];
 
 let radioInputSettings = [{
-        "firstOption": "125 per cent interest coverage ratio (ICR)",
-        "secondOption": "145 per cent interest coverage ratio (ICR)",
+        "firstOption": "125% interest coverage ratio (ICR)",
+        "secondOption": "145% interest coverage ratio (ICR)",
         "IRCTitle": "Calculations based on:"
 }];
 

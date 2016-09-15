@@ -16,7 +16,7 @@ $font-display: FinancierDisplayWeb, Georgia, serif;
 
 body {
   @include oColorsFor(page, background);
-  
+
   margin: 0;
   border: 0;
   font-family: $font-sans;
@@ -309,8 +309,8 @@ p {
   width: 60px;
   height: 22px;
   position: relative;
-   text-align: center; 
-  border-radius: 8px; 
+   text-align: center;
+  border-radius: 8px;
   display: inline-block;
   font-weight: 400;
   left: 0;
@@ -324,8 +324,8 @@ p {
   width: 30px;
   height: 22px;
   position: relative;
-  text-align: center; 
-  border-radius: 8px; 
+  text-align: center;
+  border-radius: 8px;
   display: inline-block;
   font-weight: 400;
 }
@@ -378,7 +378,7 @@ p {
   shape-rendering: crispEdges;
 }
 .tick line {
-  
+
 }
 .diffLabe{
   position:relative;
@@ -504,7 +504,7 @@ p {
     display: block;
     margin: 0 auto;
     font-size: 18px;
-    // max-width: 744px; 
+    // max-width: 744px;
   }
   .o-big-number--standard {
     font-size: 22px;
@@ -543,7 +543,7 @@ p {
   .rangeright {
       font-size: 20px;
     }
-  
+
   .chart {
     height: 390px;
   }
@@ -560,11 +560,11 @@ p {
   .dynamichighlights {
     font-size: 20px;
   }
-  
+
   .diffLabe{
     font-size: 22px;
   }
-  
+
   .diffLabeplus{
     font-size: 22px;
     }
@@ -630,7 +630,7 @@ p {
   top: -4px;
 }
 
-///////sliders stytled through webkit 
+///////sliders stytled through webkit
 input[type=range].slider {
   -webkit-appearance: none;
   width: 100%;
@@ -741,10 +741,10 @@ $linked-in-logo: 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3
   margin: 0 auto;
 }
 
-.share-links {  
+.share-links {
   // margin-left: 10px;
   text-align: center;
-  > p { 
+  > p {
     @include visually-hidden;
   }
 
@@ -785,6 +785,3 @@ $linked-in-logo: 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3
   //   margin: 0 auto;
   // }
 }
-
-
-
