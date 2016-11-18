@@ -1,8 +1,6 @@
-# btl-calculator
+# Buy-to-let calculator
 
-Currently under development.
-
-npm install & npm start
+A [buy-to-let calculator for FT Money](http://ig.ft.com/sites/btl-calculator/), built by 2016 Google News Labs Fellow [Antti Saarenpää](https://twitter.com/AnttiSaarenpaa).
 
 ## Licence
 This software is published by the Financial Times under the [MIT licence](http://opensource.org/licenses/MIT). 
